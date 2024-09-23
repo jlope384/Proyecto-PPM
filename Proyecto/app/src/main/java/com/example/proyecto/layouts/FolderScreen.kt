@@ -36,6 +36,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import java.lang.reflect.Modifier
 
@@ -182,4 +183,10 @@ fun FolderItemRow(item: FolderItem) {
             Icon(Icons.Default.MoreVert, contentDescription = "More options")
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FolderScreenPreview() {
+    FolderScreen()
 }
