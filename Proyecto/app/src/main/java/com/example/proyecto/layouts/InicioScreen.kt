@@ -68,11 +68,10 @@ private val ldItemDb = LDItemDb()
 fun InicioScreen() {
     Scaffold(
         topBar = {
-            LargeTopAppBar(
+            TopAppBar(
                 title = {
                     Text(
                     text = "Inicio",
-                    style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold
                 ) },
                 navigationIcon = {
@@ -84,20 +83,27 @@ fun InicioScreen() {
                     }
                 }
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { /* Accion de crear nuevo formulario o carpeta */ }) {
+                Icon(Icons.Default.Add, contentDescription = "Add")
+            }
         }
     ) { paddingValues ->
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
         ) {
+            Text(modifier = Modifier
+                .padding(start = 20.dp)
+                ,text = "Tus Archivos", style = MaterialTheme.typography.headlineLarge)
             Box(modifier = Modifier
                 .fillMaxSize()
             ){
                 LazyVerticalGrid(horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally),
-                    verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
+                    verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.CenterVertically),
                     columns = GridCells.Adaptive(minSize = 128.dp),
                     modifier = Modifier
-                        .padding(top = 10.dp)
                         .fillMaxSize()
                 ) {
                     items(ldItemDb.generateRandomLDItems()) {item ->
@@ -107,20 +113,6 @@ fun InicioScreen() {
                             else -> {}
                         }
                     }
-                }
-
-                FloatingActionButton(onClick = { /*TODO*/ }, modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(15.dp)
-                    .size(75.dp)
-                    , containerColor = MaterialTheme.colorScheme.primaryContainer
-                    , contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-
-
-                ){
-                    Icon(modifier = Modifier
-                        .fillMaxSize(0.6F)
-                        ,imageVector = Icons.Default.Add, contentDescription = "Agregar")
                 }
             }
         }
@@ -133,7 +125,7 @@ fun ldForms(name: String){
         Image(painter = painterResource(id = R.drawable.ldform), contentDescription = "Form",
             contentScale = ContentScale.FillWidth,
             modifier = Modifier
-                .width(120.dp)
+                .width(100.dp)
 
         )
         Text(text = name, style = MaterialTheme.typography.labelLarge)
@@ -148,7 +140,7 @@ fun ldFolder(name: String) {
         Image(painter = painterResource(id = R.drawable.ldfolder), contentDescription = "Folder",
             contentScale = ContentScale.FillWidth,
             modifier = Modifier
-                .width(120.dp)
+                .width(100.dp)
         )
         Text(text = name, style = MaterialTheme.typography.labelLarge)
     }
