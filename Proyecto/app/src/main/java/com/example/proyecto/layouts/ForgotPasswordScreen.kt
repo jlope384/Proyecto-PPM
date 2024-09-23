@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,7 +44,7 @@ fun ForgotPasswordScreen() {
             ) {
                 Card( // Usamos Card de Material Design
                     modifier = Modifier.padding(16.dp),
-                    shape = MaterialTheme.shapes.medium // Opcional: ajusta la forma si es necesario
+                    shape = MaterialTheme.shapes.medium,
                 ) {
                     Column(
                         modifier = Modifier
@@ -82,7 +83,7 @@ fun ForgotPasswordScreen() {
                                 Text("Cancel")
                             }
                             Button(onClick = { /* Handle reset password action */ }) {
-                                Text("Reset Password")
+                                Text("Reiniciar Contraseña")
                             }
                         }
                     }
