@@ -85,7 +85,9 @@ fun InicioScreen() {
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { /* Accion de crear nuevo formulario o carpeta */ }) {
+            FloatingActionButton(onClick = { /* Accion de crear nuevo formulario o carpeta */ },
+                containerColor = MaterialTheme.colorScheme.secondary
+                ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
             }
         }
@@ -95,7 +97,7 @@ fun InicioScreen() {
             .padding(paddingValues)
         ) {
             Text(modifier = Modifier
-                .padding(start = 20.dp)
+                .padding(start = 20.dp, top = 20.dp)
                 ,text = "Tus Archivos", style = MaterialTheme.typography.headlineLarge)
             Box(modifier = Modifier
                 .fillMaxSize()

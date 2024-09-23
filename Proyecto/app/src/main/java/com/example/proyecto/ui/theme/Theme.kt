@@ -10,6 +10,8 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
+
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -33,6 +35,20 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+private val LabDocsColorScheme = lightColorScheme(
+    primary = Color(0xFF368C72),
+    secondary = Color(0xFF3A9188),
+    tertiary = Color(0xFF7ECBA1),
+    background = Color.White,
+    surface = Color.White,
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onTertiary = Color.White,
+    onBackground = Color(0xFF062925),
+    onSurface = Color(0xFF062925)
+)
+
+
 
 
 @Composable
@@ -49,11 +65,11 @@ fun ProyectoTheme(
         }
 
         darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        else -> LabDocsColorScheme
     }
 
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = LabDocsColorScheme,
         typography = Typography,
         content = content
     )
