@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.proyecto.ui.theme.ProyectoTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,7 +63,10 @@ fun ProfileItem(label: String, value: String, isPassword: Boolean = false) {
         modifier = Modifier
             .fillMaxWidth() // Asegura que la Box ocupe todo el ancho disponible
             .padding(vertical = 8.dp) // Añade un poco de padding vertical para separación
-            .background(color = Color.LightGray, shape = MaterialTheme.shapes.medium) // Añade un fondo gris claro a cada ítem
+            .background(
+                color = Color.LightGray,
+                shape = MaterialTheme.shapes.medium
+            ) // Añade un fondo gris claro a cada ítem
             .border(1.dp, Color.Gray, shape = MaterialTheme.shapes.medium) // Añade un borde gris claro a cada ítem
     ) {
         Column(
@@ -93,7 +98,7 @@ fun ProfileItem(label: String, value: String, isPassword: Boolean = false) {
                             }
                         }
                     )
-                    Button(onClick = { /* Handle change password */ }) {
+                    Button(colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary) ,onClick = { /* Handle change password */ }) {
                         Text("Cambiar")
                     }
                 }
@@ -112,7 +117,7 @@ fun ProfileItem(label: String, value: String, isPassword: Boolean = false) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewProfileScreen() {
-    MaterialTheme {
+    ProyectoTheme {
         ProfileScreen()
     }
 }
