@@ -60,7 +60,7 @@ fun CreateFormScreen() {
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { showAddItemDialog = true }) {
+            FloatingActionButton(containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary ,onClick = { showAddItemDialog = true }) {
                 Icon(Icons.Default.Add, contentDescription = "Add Item")
             }
         }
