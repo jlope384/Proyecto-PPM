@@ -1,14 +1,16 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
+    id("kotlin-kapt")
 }
 
 android {
-    namespace = "com.example.proyecto"
+    namespace = "com.example.Proyecto"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.proyecto"
+        applicationId = "com.example.Proyecto"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
@@ -47,7 +49,14 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    kapt{
+        arguments{
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
+    }
 }
+
+
 
 dependencies {
 
@@ -59,7 +68,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.constraintlayout.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -67,4 +75,11 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.androidx.compose.navigation)
+    implementation(libs.kotlinx.serialization.json)
+    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation(libs.androidx.room.runtime)
+    kapt(libs.androidx.room.compiler)
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
 }

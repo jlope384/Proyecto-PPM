@@ -1,4 +1,4 @@
-package com.example.proyecto.layouts
+package com.example.proyecto.layouts.fillFormScreen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.proyecto.layouts.createFormScreen.FormItem
+import com.example.proyecto.layouts.createFormScreen.FormItemType
 import com.example.proyecto.ui.theme.ProyectoTheme
 
 @OptIn(ExperimentalMaterial3Api::class)

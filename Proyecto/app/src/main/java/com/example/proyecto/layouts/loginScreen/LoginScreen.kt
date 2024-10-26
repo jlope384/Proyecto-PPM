@@ -1,4 +1,4 @@
-package com.example.proyecto.layouts
+package com.example.proyecto.layouts.loginScreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -14,7 +14,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.proyecto.R
+import com.example.Proyecto.R
 import com.example.proyecto.ui.theme.ProyectoTheme
 
 @Composable

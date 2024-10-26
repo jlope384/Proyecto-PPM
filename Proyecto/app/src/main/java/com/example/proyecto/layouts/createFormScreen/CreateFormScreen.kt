@@ -1,4 +1,4 @@
-package com.example.proyecto.layouts
+package com.example.proyecto.layouts.createFormScreen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +26,13 @@ data class FormItem(
     val type: FormItemType,
     val question: String
 )
+
+@Composable
+fun CreateFormRoute(
+    onCreateFormSuccess: () -> Unit
+) {
+    CreateFormScreen()
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
