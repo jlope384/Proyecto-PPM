@@ -11,32 +11,22 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.proyecto.ui.theme.ProyectoTheme
-
-enum class FormItemType {
-    ShortAnswer,
-    LongAnswer,
-    MultipleChoice,
-    Scale
-}
-
-data class FormItem(
-    val type: FormItemType,
-    val question: String
-)
+import com.example.proyecto.util.type.FormItem
+import com.example.proyecto.util.type.FormItemType
 
 @Composable
 fun CreateFormRoute(
-    onCreateFormSuccess: () -> Unit
+    onCreateFormSuccess: () -> Unit,
+    id:Int? = null,
+    onBack: () -> Unit
 ) {
-    CreateFormScreen()
+    CreateFormScreen(id, onBack)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateFormScreen() {
+fun CreateFormScreen(id:Int? = null ,onBack: () -> Unit) {
     var formItems by remember { mutableStateOf(listOf<FormItem>()) }
     var showAddItemDialog by remember { mutableStateOf(false) }
 
@@ -50,7 +40,7 @@ fun CreateFormScreen() {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back navigation */ }) {
+                    IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "backstack button"
@@ -105,7 +95,7 @@ fun CreateFormScreen() {
         AddItemDialog(
             onDismiss = { showAddItemDialog = false },
             onAddItem = { type, question ->
-                formItems = formItems + FormItem(type, question)
+                formItems = formItems + FormItem(formItems.size + 1, type, question)
                 showAddItemDialog = false
             }
         )
@@ -185,7 +175,7 @@ fun AddItemDialog(onDismiss: () -> Unit, onAddItem: (FormItemType, String) -> Un
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text("Tipo de respuesta:")
-                FormItemType.values().forEach { type ->
+                FormItemType.entries.forEach { type ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         RadioButton(
                             selected = type == selectedType,
@@ -209,23 +199,3 @@ fun AddItemDialog(onDismiss: () -> Unit, onAddItem: (FormItemType, String) -> Un
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CreateFormScreenPreview() {
-    ProyectoTheme {
-        CreateFormScreen()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun FormItemComponentPreview() {
-    ProyectoTheme {
-        Column {
-            FormItemComponent(FormItem(FormItemType.ShortAnswer, "What is your name?"))
-            FormItemComponent(FormItem(FormItemType.LongAnswer, "Describe your experience"))
-            FormItemComponent(FormItem(FormItemType.MultipleChoice, "Choose your favorite color"))
-            FormItemComponent(FormItem(FormItemType.Scale, "Rate your satisfaction"))
-        }
-    }
-}

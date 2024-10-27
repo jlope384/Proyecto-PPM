@@ -36,18 +36,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.proyecto.util.db.FolderItemDb
+import com.example.proyecto.util.type.FolderItem
+
+@Composable
+fun FolderRoute(
+    onBack: () -> Unit
+){
+    FolderScreen(onBack)
+}
+
+val folderDb = FolderItemDb()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FolderScreen() {
+fun FolderScreen(onBack: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Prueba 1") },
                 navigationIcon = {
-                    IconButton(onClick = { /* Accion de regresar */ }) {
+                    IconButton(onClick = {onBack()}) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
@@ -141,11 +151,7 @@ fun SortOptions() {
 
 @Composable
 fun FolderList() {
-    val items = listOf(
-        FolderItem("Prueba 2", "08:39:06 p. m. Septiembre 22, 2024"),
-        FolderItem("Formulario 2", "08:34:50 p. m. Septiembre 22, 2024"),
-        FolderItem("Formulario 1", "08:32:56 p. m. Septiembre 22, 2024")
-    )
+    val items = folderDb.generateRandomFolderItems(10)
 
     LazyColumn {
         items(items) { item ->
@@ -153,8 +159,6 @@ fun FolderList() {
         }
     }
 }
-
-data class FolderItem(val title: String, val date: String)
 
 @Composable
 fun FolderItemRow(item: FolderItem) {
@@ -184,8 +188,3 @@ fun FolderItemRow(item: FolderItem) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun FolderScreenPreview() {
-    FolderScreen()
-}

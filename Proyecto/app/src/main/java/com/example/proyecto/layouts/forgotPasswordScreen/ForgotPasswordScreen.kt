@@ -8,12 +8,18 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+
+@Composable
+fun ForgotPasswordRoute(
+    onBack: () -> Unit
+){
+    ForgotPasswordScreen(onBack)
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ForgotPasswordScreen() {
+fun ForgotPasswordScreen(onBack: () -> Unit) {
     var email by remember { mutableStateOf(TextFieldValue("")) }
 
     Scaffold(
@@ -24,7 +30,7 @@ fun ForgotPasswordScreen() {
                     style = MaterialTheme.typography.titleLarge
                 ) },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back navigation */ }) {
+                    IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "backstack button"
@@ -89,12 +95,4 @@ fun ForgotPasswordScreen() {
             }
         }
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewForgotPasswordScreen() {
-    MaterialTheme {
-        ForgotPasswordScreen()
-    }
 }

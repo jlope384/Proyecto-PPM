@@ -26,15 +26,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.proyecto.ui.theme.ProyectoTheme
 
+@Composable
+fun ProfileRoute(
+    onBack: () -> Unit
+){
+    ProfileScreen(onBack)
+}
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(onBack: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Perfil") },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back navigation */ }) {
+                    IconButton(onClick = onBack) {
                         Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
@@ -112,10 +120,3 @@ fun ProfileItem(label: String, value: String, isPassword: Boolean = false) {
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewProfileScreen() {
-    ProyectoTheme {
-        ProfileScreen()
-    }
-}

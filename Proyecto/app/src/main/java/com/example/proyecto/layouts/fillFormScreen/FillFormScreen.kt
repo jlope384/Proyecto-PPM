@@ -10,15 +10,24 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.proyecto.layouts.createFormScreen.FormItem
-import com.example.proyecto.layouts.createFormScreen.FormItemType
-import com.example.proyecto.ui.theme.ProyectoTheme
+import com.example.proyecto.util.db.FormItemDb
+import com.example.proyecto.util.type.FormItem
+import com.example.proyecto.util.type.FormItemType
+
+@Composable
+fun FillFormRoute(
+    onSubmit: (Map<String, String>) -> Unit,
+    onBack: () -> Unit
+){
+    FillFormScreen(onSubmit, onBack)
+}
+
+val formDb = FormItemDb()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FillFormScreen(formItems: List<FormItem>, onSubmit: (Map<String, String>) -> Unit) {
+fun FillFormScreen(onSubmit: (Map<String, String>) -> Unit, onBack: () -> Unit) {
     val responses = remember { mutableStateMapOf<String, String>() }
 
     Scaffold(
@@ -26,7 +35,7 @@ fun FillFormScreen(formItems: List<FormItem>, onSubmit: (Map<String, String>) ->
             TopAppBar(
                 title = { Text("Llenar Formulario", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back navigation */ }) {
+                    IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Volver"
@@ -51,6 +60,7 @@ fun FillFormScreen(formItems: List<FormItem>, onSubmit: (Map<String, String>) ->
                     .weight(1f)
                     .fillMaxWidth()
             ) {
+                val formItems: List<FormItem> = formDb.generateRandomFormItems(10)
                 items(formItems) { item ->
                     FillFormItemComponent(
                         item = item,
@@ -138,20 +148,5 @@ fun FillFormItemComponent(
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun FillFormScreenPreview() {
-    val sampleFormItems = listOf(
-        FormItem(FormItemType.ShortAnswer, "¿Cuál es tu nombre?"),
-        FormItem(FormItemType.LongAnswer, "Describe tu experiencia con nuestra app"),
-        FormItem(FormItemType.MultipleChoice, "¿Cuál es tu color favorito?"),
-        FormItem(FormItemType.Scale, "¿Qué tan satisfecho estás con nuestro servicio?")
-    )
-
-    ProyectoTheme {
-        FillFormScreen(formItems = sampleFormItems, onSubmit = {})
     }
 }

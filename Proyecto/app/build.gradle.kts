@@ -77,9 +77,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.compose.navigation)
     implementation(libs.kotlinx.serialization.json)
-    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation(libs.coil.compose.v270)
     implementation(libs.androidx.room.runtime)
     kapt(libs.androidx.room.compiler)
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation(libs.androidx.datastore.preferences.v100)
 
 }
