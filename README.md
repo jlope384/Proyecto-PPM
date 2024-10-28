@@ -17,6 +17,13 @@ Este es un proyecto de Android que utiliza Jetpack Compose para crear una aplica
 - Android Studio Koala | 2024.1.1 Patch 1
 - Kotlin 1.5+
 - Gradle 7.0+
+- 
+## Librerías Utilizadas
+
+- [Jetpack Compose](https://developer.android.com/jetpack/compose) - Para la interfaz de usuario declarativa.
+- [Firebase](https://firebase.google.com/) - Para autenticación y base de datos en tiempo real.
+- [Room](https://developer.android.com/jetpack/androidx/releases/room) - Para la persistencia de datos local.
+- [Serializable](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.io/-serializable/) - Para la serialización de datos.
 
 ## Instalación
 
