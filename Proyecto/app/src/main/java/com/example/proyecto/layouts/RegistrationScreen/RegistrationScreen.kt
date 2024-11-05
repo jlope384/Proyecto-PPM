@@ -34,9 +34,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.proyecto.ui.theme.ProyectoTheme
 
+
+@Composable
+fun RegisterRoute(
+    onBack: () -> Unit
+){
+    RegisterScreen(onBack)
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen() {
+fun RegisterScreen(onBack: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -51,7 +59,7 @@ fun RegisterScreen() {
                     style = MaterialTheme.typography.titleLarge
                 ) },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back navigation */ }) {
+                    IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "backstack button"
@@ -161,10 +169,3 @@ fun RegisterScreen() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun RegisterScreenPreview() {
-    ProyectoTheme {
-        RegisterScreen()
-    }
-}

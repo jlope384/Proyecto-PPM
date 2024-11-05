@@ -18,7 +18,16 @@ import com.example.Proyecto.R
 import com.example.proyecto.ui.theme.ProyectoTheme
 
 @Composable
-fun LoginScreen() {
+fun LoginScreenRoute(
+    onLoginClick : () -> Unit,
+    onForgotPassword: () -> Unit,
+    onRegister: () -> Unit
+){
+    LoginScreen(onLoginClick, onForgotPassword, onRegister)
+}
+
+@Composable
+fun LoginScreen(onLoginClick : () -> Unit, onForgotPassword: () -> Unit, onRegister: () -> Unit) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -71,7 +80,7 @@ fun LoginScreen() {
 
         // Login button
         Button(
-            onClick = { /* TODO: Acción de inicio de sesión */ },
+            onClick = onLoginClick,
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
@@ -83,7 +92,7 @@ fun LoginScreen() {
         // Forgot password text
         ClickableText(
             text = AnnotatedString("¿Olvidaste tu contraseña?"),
-            onClick = { /* TODO: Acción de recuperación de contraseña */ },
+            onClick = { onForgotPassword() },
             style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.primary)
         )
 
@@ -92,16 +101,8 @@ fun LoginScreen() {
         // Create account text
         ClickableText(
             text = AnnotatedString("Empezando? Crea tu usuario"),
-            onClick = { /* TODO: Acción de creación de usuario */ },
+            onClick = { onRegister() },
             style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.primary)
         )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    ProyectoTheme {
-        LoginScreen()
     }
 }
