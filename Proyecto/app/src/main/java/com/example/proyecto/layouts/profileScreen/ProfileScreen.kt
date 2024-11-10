@@ -119,4 +119,12 @@ fun ProfileItem(label: String, value: String, isPassword: Boolean = false) {
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun ProfileScreenPreview() {
+    ProyectoTheme {
+        ProfileScreen(onBack = {})
+    }
+}
+
 

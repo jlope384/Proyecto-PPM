@@ -49,7 +49,6 @@ fun RegisterScreen(onBack: () -> Unit) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-    // Controla si se muestra la contraseña
 
     Scaffold(
         topBar = {
@@ -77,15 +76,14 @@ fun RegisterScreen(onBack: () -> Unit) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Rodea el contenido en un Box para agregar bordes y padding
             Box(
                 modifier = Modifier
-                    .padding(16.dp)  // Padding de la box
+                    .padding(16.dp)
                     .border(
                         border = BorderStroke(1.dp, androidx.compose.ui.graphics.Color.Black),
                         shape = RoundedCornerShape(8.dp)
                     )
-                    .padding(16.dp)  // Padding del contenido de la box
+                    .padding(16.dp)
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -93,7 +91,7 @@ fun RegisterScreen(onBack: () -> Unit) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .align(Alignment.Start)  // Alinea el Box a la izquierda
+                            .align(Alignment.Start)
                     ) {
                         Text(text = "Email", style = MaterialTheme.typography.bodyLarge)
                     }
@@ -112,7 +110,7 @@ fun RegisterScreen(onBack: () -> Unit) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .align(Alignment.Start)  // Alinea el Box a la izquierda
+                            .align(Alignment.Start)
                     ) {
                         Text(text = "Usuario", style = MaterialTheme.typography.bodyLarge)
                     }
@@ -130,7 +128,7 @@ fun RegisterScreen(onBack: () -> Unit) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .align(Alignment.Start)  // Alinea el Box a la izquierda
+                            .align(Alignment.Start)
                     ) {
                         Text(text = "Contraseña", style = MaterialTheme.typography.bodyLarge)
                     }
@@ -144,10 +142,10 @@ fun RegisterScreen(onBack: () -> Unit) {
                         },
                         trailingIcon = {
                             IconButton(
-                                onClick = { }  // Cambiar el estado de visibilidad
+                                onClick = { }
                             ) {
                                 Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Cambiar el icono cuando sea funcional la pantalla e implementar logica
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                     contentDescription = "visibility"
                                 )
                             }
@@ -155,7 +153,6 @@ fun RegisterScreen(onBack: () -> Unit) {
 
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    // Register button
                     Button(
                         onClick = { /* TODO: Acción de registro */ },
                         modifier = Modifier.fillMaxWidth(),

@@ -20,7 +20,7 @@ class AuthViewModel : ViewModel() {
 
         _authState.value = AuthState.Loading
         viewModelScope.launch {
-            if (email == "test@example.com" && password == "password123") {
+            if (email == "1" && password == "1") {
                 _authState.value = AuthState.Success
             } else {
                 _authState.value = AuthState.Error("Correo o contraseña incorrectos")

@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.proyecto.layouts.loginScreen.authentication.AuthState
 import com.example.proyecto.layouts.loginScreen.loginScreenViewModel.AuthViewModel
+import com.example.proyecto.util.screens.LoadingScreen
 
 
 @Composable
@@ -37,7 +38,6 @@ fun LoginScreenRoute(
     onRegister: () -> Unit,
     viewModel: AuthViewModel = viewModel()
 ) {
-    // Obtenemos el estado de autenticación desde el ViewModel
     val authState by viewModel.authState.collectAsState()
 
     LoginScreen(
@@ -50,9 +50,8 @@ fun LoginScreenRoute(
         resetAuthState = viewModel::resetState
     )
 
-    // Navega al siguiente paso si el login es exitoso
     if (authState is AuthState.Success) {
-        viewModel.resetState()  // Limpiamos el estado después de iniciar sesión
+        viewModel.resetState()
         onLoginSuccess()
     }
 }
@@ -102,24 +101,18 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Estado de autenticación
         when (authState) {
             is AuthState.Error -> Text(
-                text = (authState as AuthState.Error).message,
+                text = authState.message,
                 color = MaterialTheme.colorScheme.error
             )
             AuthState.Loading -> CircularProgressIndicator()
-            AuthState.Idle -> Unit // No mostrar nada cuando está en Idle
-            AuthState.Success -> Text(
-                text = "¡Autenticación exitosa!",
-                color = MaterialTheme.colorScheme.primary
-            )
-            else -> {}
+            AuthState.Idle -> Unit
+            AuthState.Success -> LoadingScreen()
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botón de Login
         Button(
             onClick = {
                 resetAuthState()
@@ -132,7 +125,6 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Enlaces para recuperación y registro
         ClickableText(
             text = AnnotatedString("¿Olvidaste tu contraseña?"),
             onClick = { onForgotPassword() }
