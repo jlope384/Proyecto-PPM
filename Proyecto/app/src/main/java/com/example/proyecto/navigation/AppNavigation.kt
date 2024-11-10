@@ -24,7 +24,7 @@ fun AppNav(
         modifier = modifier
     ){
         loginScreen(
-            onLoginClick = {
+            onLoginSuccess = {
                 navController.navigateToMainGraph(
                     navOptions = NavOptions.Builder().setPopUpTo<LoginDestination>(
                         inclusive = true
