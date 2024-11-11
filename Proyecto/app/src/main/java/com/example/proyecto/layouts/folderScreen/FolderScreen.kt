@@ -1,5 +1,3 @@
-package com.example.proyecto.layouts.folderScreen
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.List
@@ -31,33 +30,32 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.proyecto.util.db.FolderItemDb
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.proyecto.util.type.FolderItem
-
-@Composable
-fun FolderRoute(
-    onBack: () -> Unit
-){
-    FolderScreen(onBack)
-}
-
-val folderDb = FolderItemDb()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FolderScreen(onBack: () -> Unit) {
+fun FolderScreen(onBack: () -> Unit, viewModel: FolderScreenViewModel = viewModel()) {
+    val folderItems by viewModel.folderItems.collectAsState()
+    val selectedItems by viewModel.selectedItems.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
+    val showNoResultsMessage by viewModel.showNoResultsMessage.collectAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Prueba 1") },
                 navigationIcon = {
-                    IconButton(onClick = {onBack()}) {
+                    IconButton(onClick = { onBack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
@@ -69,26 +67,50 @@ fun FolderScreen(onBack: () -> Unit) {
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { /* Accion de crear nuevo formulario o carpeta */ }) {
-                Icon(Icons.Default.Add, contentDescription = "Add")
+            if (selectedItems.isNotEmpty()) {
+                FloatingActionButton(onClick = { viewModel.deleteSelectedItems() }) {
+                    Icon(Icons.Default.Delete, contentDescription = "Delete")
+                }
+            } else {
+                FloatingActionButton(onClick = { /* Navegar a la pantalla de crear formulario */ }) {
+                    Icon(Icons.Default.Add, contentDescription = "Add")
+                }
             }
         }
     ) {
-        Column(modifier = androidx.compose.ui.Modifier.padding(it)) {
-            SearchBar()
-            SortOptions()
-            FolderList()
+        Column(modifier = Modifier.padding(it)) {
+            SearchBar(
+                query = searchQuery,
+                onQueryChange = { viewModel.searchItems(it) }
+            )
+            SortOptions(
+                onSortByName = { viewModel.sortItemsByName() },
+                onSortByDate = { viewModel.sortItemsByDate() }
+            )
+            if (showNoResultsMessage) {
+                Text("No existe ningún formulario con ese nombre", modifier = Modifier.padding(16.dp))
+            } else {
+                FolderList(
+                    items = folderItems,
+                    selectedItems = selectedItems,
+                    onItemSelect = { id, isSelected ->
+                        viewModel.toggleSelectAll(isSelected)
+                    },
+                    onItemDelete = { id -> viewModel.deleteItem(id) },
+                    onItemEdit = { id, newTitle -> viewModel.updateItemTitle(id, newTitle) }
+                )
+            }
         }
     }
 }
 
 @Composable
-fun SearchBar() {
+fun SearchBar(query: String, onQueryChange: (String) -> Unit) {
     TextField(
-        value = "",
-        onValueChange = { /* Actualizar valor del campo */ },
+        value = query,
+        onValueChange = onQueryChange,
         placeholder = { Text("Buscar...") },
-        modifier = androidx.compose.ui.Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         leadingIcon = {
@@ -98,12 +120,12 @@ fun SearchBar() {
 }
 
 @Composable
-fun SortOptions() {
-    var expanded by remember { mutableStateOf(false) } // Estado para controlar si el menú está expandido o no
+fun SortOptions(onSortByName: () -> Unit, onSortByDate: () -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = androidx.compose.ui.Modifier
+        modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
     ) {
@@ -111,35 +133,33 @@ fun SortOptions() {
             checked = false,
             onCheckedChange = { /* Acción de seleccionar todo */ }
         )
-        Text(text = "Seleccionar todo", modifier = androidx.compose.ui.Modifier.padding(start = 8.dp))
+        Text(text = "Seleccionar todo", modifier = Modifier.padding(start = 8.dp))
 
-        Spacer(modifier = androidx.compose.ui.Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(1f))
 
         Text(text = "Ordenar por: ")
 
         Box {
-            // Botón que al hacer clic muestra el menú desplegable
             IconButton(onClick = { expanded = true }) {
                 Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
             }
 
-            // Menú desplegable
             DropdownMenu(
                 expanded = expanded,
-                onDismissRequest = { expanded = false } // Cerrar el menú cuando se hace clic fuera
+                onDismissRequest = { expanded = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text("Fecha de modificación") }, // Aquí pasamos el texto como un parámetro
+                    text = { Text("Fecha de modificación") },
                     onClick = {
-                        /* Ordenar por Fecha */
-                        expanded = false // Cerrar el menú al seleccionar
+                        onSortByDate()
+                        expanded = false
                     }
                 )
                 DropdownMenuItem(
-                    text = { Text("Nombre") }, // Aquí pasamos el texto como un parámetro
+                    text = { Text("Nombre") },
                     onClick = {
-                        /* Ordenar por Nombre */
-                        expanded = false // Cerrar el menú al seleccionar
+                        onSortByName()
+                        expanded = false
                     }
                 )
             }
@@ -147,25 +167,42 @@ fun SortOptions() {
     }
 }
 
-
-
 @Composable
-fun FolderList() {
-    val items = folderDb.generateRandomFolderItems(10)
-
+fun FolderList(
+    items: List<FolderItem>,
+    selectedItems: Set<Int>,
+    onItemSelect: (Int, Boolean) -> Unit,
+    onItemDelete: (Int) -> Unit,
+    onItemEdit: (Int, String) -> Unit
+) {
     LazyColumn {
         items(items) { item ->
-            FolderItemRow(item)
+            FolderItemRow(
+                item = item,
+                isSelected = selectedItems.contains(item.id),
+                onSelect = { isSelected -> onItemSelect(item.id, isSelected) },
+                onDelete = { onItemDelete(item.id) },
+                onEdit = { newTitle -> onItemEdit(item.id, newTitle) }
+            )
         }
     }
 }
 
 @Composable
-fun FolderItemRow(item: FolderItem) {
+fun FolderItemRow(
+    item: FolderItem,
+    isSelected: Boolean,
+    onSelect: (Boolean) -> Unit,
+    onDelete: () -> Unit,
+    onEdit: (String) -> Unit
+) {
+    var showMenu by remember { mutableStateOf(false) }
+    var newTitle by remember { mutableStateOf(item.title) }
+
     Row(
-        modifier = androidx.compose.ui.Modifier
+        modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* Acción de abrir carpeta/formulario */ }
+            .clickable { onSelect(!isSelected) }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -175,16 +212,36 @@ fun FolderItemRow(item: FolderItem) {
             Icon(Icons.Default.List, contentDescription = "Formulario")
         }
 
-        Column(modifier = androidx.compose.ui.Modifier.padding(start = 16.dp)) {
+        Column(modifier = Modifier.padding(start = 16.dp)) {
             Text(text = item.title, style = MaterialTheme.typography.headlineSmall)
             Text(text = item.date, style = MaterialTheme.typography.bodyMedium)
         }
 
-        Spacer(modifier = androidx.compose.ui.Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(1f))
 
-        IconButton(onClick = { /* Acción de más opciones */ }) {
+        IconButton(onClick = { showMenu = true }) {
             Icon(Icons.Default.MoreVert, contentDescription = "More options")
+        }
+
+        DropdownMenu(
+            expanded = showMenu,
+            onDismissRequest = { showMenu = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text("Modificar nombre") },
+                onClick = {
+                    showMenu = false
+                    // Mostrar un diálogo para editar el nombre
+                    // Aquí puedes implementar un diálogo para editar el nombre
+                }
+            )
+            DropdownMenuItem(
+                text = { Text("Eliminar") },
+                onClick = {
+                    showMenu = false
+                    onDelete()
+                }
+            )
         }
     }
 }
-
