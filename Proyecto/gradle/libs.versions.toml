@@ -8,12 +8,12 @@ coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
+kotlinxCoroutinesPlayServices = "1.9.0"
 lifecycleRuntimeKtx = "2.6.1"
 activityCompose = "1.9.1"
 composeBom = "2024.04.01"
 iconsExtended = "1.6.8"
-materialVersion = "1.7.2"
-navigationCompose = "2.8.0"
+navigationCompose = "2.8.3"
 kotlinSerialization = "1.6.3"
 dataStore = "1.1.1"
 reorderable = "0.9.6"
@@ -28,6 +28,11 @@ runtimeLivedata = "1.7.5"
 firebaseFirestoreKtx = "25.1.1"
 identityJvm = "202411.1"
 
+ktor = "2.3.12"
+coil = "3.0.0-rc01"
+firebase = "33.5.1"
+google-services = "4.4.2"
+crashlytics = "3.0.2"
 
 
 [libraries]
@@ -49,7 +54,6 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref="iconsExtended"}
-coilCompose = { group = "io.coil-kt", name = "coil-compose", version = "2.2.2" }
 androidx-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref ="navigationCompose"}
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerialization" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore"}
@@ -66,12 +70,45 @@ androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtim
 reorderable = { module = "org.burnoutcrew.composereorderable:reorderable", version.ref = "reorderable" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 identity-jvm = { group = "com.android.identity", name = "identity-jvm", version.ref = "identityJvm" }
+ktor-client-cio = { group = "io.ktor", name="ktor-client-cio", version.ref = "ktor" }
+ktor-client-content-negotiation = { group = "io.ktor", name="ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-core = { group = "io.ktor", name="ktor-client-core", version.ref = "ktor" }
+ktor-client-logging = { group = "io.ktor", name="ktor-client-logging", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { group = "io.ktor", name="ktor-serialization-kotlinx-json", version.ref = "ktor" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 
+kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name="kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
 
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore-ktx" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref ="kotlin"}
+jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
+crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics"}
 
-
+[bundles]
+ktor = [
+    "ktor-client-cio",
+    "ktor-client-content-negotiation",
+    "ktor-client-core",
+    "ktor-client-logging",
+    "ktor-serialization-kotlinx-json"
+]
+coil = [
+    "coil-compose",
+    "coil-network"
+]
+firebase-libs = [
+    "firebase-auth",
+    "firebase-firestore",
+    "firebase-crashlytics",
+    "firebase-messaging",
+    "kotlinx-coroutines-play-services"
+]

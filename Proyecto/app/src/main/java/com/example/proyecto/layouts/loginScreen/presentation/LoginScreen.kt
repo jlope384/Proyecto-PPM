@@ -1,6 +1,7 @@
-package com.example.proyecto.layouts.loginScreen
+package com.example.proyecto.layouts.loginScreen.presentation
 
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -27,15 +27,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.proyecto.layouts.loginScreen.authentication.AuthState
-import com.example.proyecto.layouts.loginScreen.loginScreenViewModel.AuthViewModel
-import com.example.proyecto.util.screens.LoadingScreen
+import com.example.Proyecto.R
 
 
 @Composable
@@ -43,36 +42,33 @@ fun LoginScreenRoute(
     onLoginSuccess: () -> Unit,
     onForgotPassword: () -> Unit,
     onRegister: () -> Unit,
-    viewModel: AuthViewModel = viewModel()
+    viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
 ) {
-    val authState by viewModel.authState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     LoginScreen(
-        authState = authState,
-        onLoginClick = { email, password ->
-            viewModel.login(email, password)
-        },
+        uiState = uiState,
+        onEmailChanged = { email -> viewModel.onEvent(LoginScreenEvent.EmailChanged(email)) },
+        onPasswordChanged = { password -> viewModel.onEvent(LoginScreenEvent.PasswordChanged(password)) },
+        onLoginClick = { viewModel.onEvent(LoginScreenEvent.LoginClicked) },
         onForgotPassword = onForgotPassword,
-        onRegister = onRegister,
-        resetAuthState = viewModel::resetState
+        onRegister = onRegister
     )
 
-    if (authState is AuthState.Success) {
-        viewModel.resetState()
+    if (uiState.authStatus == true) {
         onLoginSuccess()
     }
 }
 
 @Composable
 fun LoginScreen(
-    authState: AuthState,
-    onLoginClick: (String, String) -> Unit,
+    uiState: LoginScreenState,
+    onEmailChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    onLoginClick: () -> Unit,
     onForgotPassword: () -> Unit,
-    onRegister: () -> Unit,
-    resetAuthState: () -> Unit
+    onRegister: () -> Unit
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
     val visualTransformation = if (passwordVisible) {
@@ -88,13 +84,15 @@ fun LoginScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Image(painter = painterResource(id = R.drawable.ic_lab_flask), contentDescription = "Frasco")
+        Spacer(modifier = Modifier.height(16.dp))
         Text("Inicia sesión en LabDocs", style = MaterialTheme.typography.titleLarge)
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
+            value = uiState.email,
+            onValueChange = onEmailChanged,
             label = { Text("Correo electrónico") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -102,8 +100,8 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = uiState.password,
+            onValueChange = onPasswordChanged,
             label = { Text("Contraseña") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = visualTransformation,
@@ -113,7 +111,7 @@ fun LoginScreen(
                         imageVector = if (passwordVisible) {
                             androidx.compose.material.icons.Icons.Default.Clear
                         } else {
-                            androidx.compose.material.icons.Icons.Default.MoreVert //Cambiar mas adelante
+                            androidx.compose.material.icons.Icons.Default.MoreVert // Cambiar más adelante
                         },
                         contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
                     )
@@ -123,23 +121,27 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        when (authState) {
-            is AuthState.Error -> Text(
-                text = authState.message,
-                color = MaterialTheme.colorScheme.error
-            )
-            AuthState.Loading -> CircularProgressIndicator()
-            AuthState.Idle -> Unit
-            AuthState.Success -> LoadingScreen()
+        if (uiState.isLoading) {
+            CircularProgressIndicator()
+        } else {
+            uiState.errorMessage?.let { error ->
+                Text(
+                    text = error,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+            uiState.successMessage?.let { success ->
+                Text(
+                    text = success,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = {
-                resetAuthState()
-                onLoginClick(email, password)
-            },
+            onClick = onLoginClick,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Iniciar sesión")
@@ -161,16 +163,15 @@ fun LoginScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun LoginScreenPreview() {
-    val authState = AuthState.Idle
-
     LoginScreen(
-        authState = authState,
-        onLoginClick = { _, _ -> },
+        uiState = LoginScreenState(),
+        onEmailChanged = {},
+        onPasswordChanged = {},
+        onLoginClick = {},
         onForgotPassword = {},
-        onRegister = {},
-        resetAuthState = {}
+        onRegister = {}
     )
 }
