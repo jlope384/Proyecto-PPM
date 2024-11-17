@@ -5,9 +5,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.example.proyecto.layouts.createFormScreen.CreateFormDestination
-import com.example.proyecto.layouts.loginScreen.LoginDestination
-import com.example.proyecto.layouts.loginScreen.LoginScreenRoute
 import kotlinx.serialization.Serializable
 
 @Serializable
