@@ -71,6 +71,8 @@ dependencies {
     implementation(libs.firebase.auth.ktx)
     implementation(libs.androidx.constraintlayout.compose.android)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.identity.jvm)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -84,5 +86,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.datastore.preferences.v100)
+    implementation(libs.reorderable)
+    implementation(libs.gson)
 
 }

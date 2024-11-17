@@ -6,4 +6,3 @@ enum class FormItemType {
     MultipleChoice,
     Scale
 }
-

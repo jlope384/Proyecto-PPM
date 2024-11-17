@@ -2,6 +2,7 @@
 agp = "8.5.1"
 coilCompose = "2.7.0"
 datastorePreferences = "1.0.0"
+gson = "2.10.1"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -15,6 +16,7 @@ materialVersion = "1.7.2"
 navigationCompose = "2.8.0"
 kotlinSerialization = "1.6.3"
 dataStore = "1.1.1"
+reorderable = "0.9.6"
 splashScreen = "1.0.1"
 room = "2.6.1"
 roomCommon = "2.6.1"
@@ -23,6 +25,8 @@ datastorePreferencesCoreJvm = "1.1.1"
 firebaseAuthKtx = "23.1.0"
 constraintlayoutComposeAndroid = "1.1.0"
 runtimeLivedata = "1.7.5"
+firebaseFirestoreKtx = "25.1.1"
+identityJvm = "202411.1"
 
 
 
@@ -30,6 +34,7 @@ runtimeLivedata = "1.7.5"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences-v100 = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 coil-compose-v270 = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -58,6 +63,9 @@ androidx-datastore-preferences-core-jvm = { group = "androidx.datastore", name =
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 androidx-constraintlayout-compose-android = { group = "androidx.constraintlayout", name = "constraintlayout-compose-android", version.ref = "constraintlayoutComposeAndroid" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
+reorderable = { module = "org.burnoutcrew.composereorderable:reorderable", version.ref = "reorderable" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
+identity-jvm = { group = "com.android.identity", name = "identity-jvm", version.ref = "identityJvm" }
 
 
 
