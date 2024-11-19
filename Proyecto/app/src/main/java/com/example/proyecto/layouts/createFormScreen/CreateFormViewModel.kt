@@ -172,7 +172,7 @@ class CreateFormViewModel : ViewModel() {
 
         try {
             firestore.collection("users")
-                .document(userId)         // UserId de firebase
+                .document("userId")         // UserId de firebase
                 .collection("forms")
                 .document(formId)
                 .set(formData)

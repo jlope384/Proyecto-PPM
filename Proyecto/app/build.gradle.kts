@@ -111,3 +111,15 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
 }
+
+configurations.all {
+    resolutionStrategy {
+        eachDependency {
+            if (requested.group == "org.jetbrains.kotlinx" &&
+                requested.name.startsWith("kotlinx-serialization")) {
+                useVersion("1.6.3")
+                because("Need to align serialization versions")
+            }
+        }
+    }
+}
