@@ -11,7 +11,6 @@ import com.example.Proyecto.layouts.fillFormScreen.fillFormScreen
 import com.example.Proyecto.layouts.fillFormScreen.navigateToFillFormScreen
 import com.example.Proyecto.layouts.folderScreen.folderScreen
 import com.example.Proyecto.layouts.folderScreen.navigateToFolderScreen
-import com.example.Proyecto.layouts.profileScreen.profileScreen
 import com.example.Proyecto.layouts.startScreen.StartDestination
 import com.example.Proyecto.layouts.startScreen.startScreen
 
@@ -43,9 +42,6 @@ fun NavGraphBuilder.mainNavGraph(
             onSubmit = {}
         )
         folderScreen(
-            onBack = navController::navigateUp,
-        )
-        profileScreen(
             onBack = navController::navigateUp,
         )
 

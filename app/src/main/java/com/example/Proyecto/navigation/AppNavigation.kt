@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.rememberNavController
+import com.example.Proyecto.layouts.RegistrationScreen.navigateToRegistrationScreen
 import com.example.Proyecto.layouts.RegistrationScreen.registrationScreen
 import com.example.Proyecto.layouts.forgotPasswordScreen.forgotPasswordScreen
 import com.example.Proyecto.layouts.forgotPasswordScreen.navigateToForgotPasswordScreen
@@ -31,7 +32,7 @@ fun AppNav(
                 )
             },
             onForgotPassword = navController::navigateToForgotPasswordScreen,
-            onRegister = navController::navigateToForgotPasswordScreen
+            onRegister = navController::navigateToRegistrationScreen
         )
         forgotPasswordScreen(onBack = navController::navigateUp)
         registrationScreen(onBack = navController::navigateUp)
