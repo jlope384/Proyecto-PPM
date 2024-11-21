@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "597124882751",
+    "project_id": "labdocs-5ac20",
+    "storage_bucket": "labdocs-5ac20.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:597124882751:android:a3e3e63016409eb3b6738a",
+        "android_client_info": {
+          "package_name": "com.example.Proyecto"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxXDwGaRcyEWDhhCq6mHbpd941hbYkHxU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
