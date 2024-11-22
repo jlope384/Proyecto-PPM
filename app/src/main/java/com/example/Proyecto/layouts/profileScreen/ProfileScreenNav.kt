@@ -18,9 +18,9 @@ fun NavGraphBuilder.profileScreen(
     onLogout: () -> Unit
 ) {
     composable<ProfileDestination> {
-        ProfileScreen(
+        ProfileScreenRoute(
             onBack = onBack,
-            onLogout = { /*TODO*/ }
+            onLogout = onLogout
         )
     }
 }

@@ -36,6 +36,8 @@ fun ProfileScreenRoute(
         onLogout = onLogout
     )
 }
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
@@ -108,9 +110,7 @@ fun ProfileItem(label: String, value: String, isPassword: Boolean = false) {
                             }
                         }
                     )
-                    Button(onClick = {  }) {
-                        Text("Cambiar")
-                    }
+
                 }
             } else {
                 Text(

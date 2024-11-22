@@ -10,11 +10,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6aa23b77-8d0b-4a9d-b030-6fbbb225f559" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/Proyecto/layouts/profileScreen/ProfileScreen.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/Proyecto/layouts/profileScreen/ProfileScreenNav.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/Proyecto/layouts/startScreen/StartScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/Proyecto/layouts/startScreen/StartScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/Proyecto/layouts/startScreen/StartScreenNav.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/Proyecto/layouts/startScreen/StartScreenNav.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/Proyecto/layouts/profileScreen/ProfileScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/Proyecto/layouts/profileScreen/ProfileScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/Proyecto/layouts/profileScreen/ProfileScreenNav.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/Proyecto/layouts/profileScreen/ProfileScreenNav.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/Proyecto/navigation/MainNavGraph.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/Proyecto/navigation/MainNavGraph.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
