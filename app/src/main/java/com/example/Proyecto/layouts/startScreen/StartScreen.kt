@@ -57,6 +57,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.LaunchedEffect
 import com.example.Proyecto.util.type.FormDisplayItem
 
 
@@ -65,9 +66,9 @@ fun StartScreenRoute(
     onProfileClick: () -> Unit,
     onFolderClick: (String) -> Unit,
     onFillFormClick: (String, String?) -> Unit,
-    onEditFormClick: (String?, String?) -> Unit,
-    viewModel: StartScreenViewModel = StartScreenViewModel()
+    onEditFormClick: (String?, String?) -> Unit
 ) {
+    val viewModel: StartScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
     val state by viewModel.startState.collectAsStateWithLifecycle()
     StartScreen(
         state = state,
@@ -117,6 +118,8 @@ fun StartScreen(
             }
         }
     ) { paddingValues ->
+        println("El state es")
+        println(state.isLoading)
         when (state.isLoading) {
             true -> {
                 Box(

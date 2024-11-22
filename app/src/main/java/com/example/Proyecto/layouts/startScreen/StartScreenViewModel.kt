@@ -20,17 +20,16 @@ class StartScreenViewModel : ViewModel() {
     private val _startState = MutableStateFlow(StartScreenState())
     val startState: StateFlow<StartScreenState> = _startState.asStateFlow()
 
-    // Carga inicial de datos
     init {
+        println("calling from iinit")
         loadFoldersAndForms()
     }
 
-    fun loadFoldersAndForms() {
+    private fun loadFoldersAndForms() {
         viewModelScope.launch {
-            // Explicitly set `isLoading` to true
             _startState.update { it.copy(isLoading = true, error = null) }
-
             try {
+                println("se supone que isloading falso")
                 val folders = repository.getFolders()
                 val forms = repository.getForms()
                 _startState.update {
@@ -49,6 +48,7 @@ class StartScreenViewModel : ViewModel() {
                     )
                 }
             }
+            _startState.update { it.copy(isLoading = false, error = null) }
         }
     }
 
@@ -58,6 +58,7 @@ class StartScreenViewModel : ViewModel() {
             try {
                 repository.createFolder(FolderItem(id = UUID.randomUUID().toString(), title = title, date = LocalDateTime.now().format(
                     DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),))
+                println("calling from createFolder")
                 loadFoldersAndForms()
             } catch (e: Exception) {
                 _startState.update {
@@ -70,6 +71,7 @@ class StartScreenViewModel : ViewModel() {
     }
 
     fun retryLoading() {
+        println("calling from retry")
         loadFoldersAndForms()
     }
 }
