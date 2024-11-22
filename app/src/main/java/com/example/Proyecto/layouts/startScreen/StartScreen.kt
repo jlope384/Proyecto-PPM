@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -63,7 +64,7 @@ import com.example.Proyecto.util.type.FormDisplayItem
 
 @Composable
 fun StartScreenRoute(
-    onBack: () -> Unit,
+    onProfileClick: () -> Unit,
     onFolderClick: (String) -> Unit,
     onFillFormClick: (String, String?) -> Unit,
     onEditFormClick: (String?, String?) -> Unit
@@ -72,7 +73,7 @@ fun StartScreenRoute(
     val state by viewModel.startState.collectAsStateWithLifecycle()
     StartScreen(
         state = state,
-        onBack = onBack,
+        onProfileClick = onProfileClick,
         onFolderClick = onFolderClick,
         onFillFormClick = onFillFormClick,
         onEditFormClick = onEditFormClick,
@@ -86,7 +87,7 @@ fun StartScreenRoute(
 @Composable
 fun StartScreen(
     state: StartScreenState,
-    onBack: () -> Unit,
+    onProfileClick: () -> Unit,
     onFolderClick: (String) -> Unit,
     onFillFormClick: (String, String?) -> Unit,
     onEditFormClick: (String?, String?) -> Unit,
@@ -100,10 +101,10 @@ fun StartScreen(
             TopAppBar(
                 title = { Text(text = "Inicio", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = onProfileClick) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "backstack button"
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = "Perfil"
                         )
                     }
                 }
