@@ -12,6 +12,7 @@ class UserPreferences(private val dataStore: DataStore<Preferences>) {
 
     val USER_ID_KEY = stringPreferencesKey("user_id")
     val USER_LOGGED_IN_KEY = booleanPreferencesKey("user_logged_in")
+    val USER_EMAIL_KEY = stringPreferencesKey("user_email")
 
     suspend fun saveUserId(userId: String) {
         dataStore.edit { preferences ->
@@ -25,11 +26,21 @@ class UserPreferences(private val dataStore: DataStore<Preferences>) {
         }
     }
 
+    suspend fun saveUserEmail(userEmail: String) {
+        dataStore.edit { preferences ->
+            preferences[USER_EMAIL_KEY] = userEmail
+        }
+    }
+
     fun getUserId(): Flow<String?> = dataStore.data.map { preferences ->
         preferences[USER_ID_KEY]
     }
 
     fun getUserLoggedIn(): Flow<Boolean> = dataStore.data.map { preferences ->
         preferences[USER_LOGGED_IN_KEY] ?: false
+    }
+
+    fun getUserEmail(): Flow<String?> = dataStore.data.map { preferences ->
+        preferences[USER_EMAIL_KEY]
     }
 }
