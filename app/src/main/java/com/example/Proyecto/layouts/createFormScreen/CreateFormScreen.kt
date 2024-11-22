@@ -258,7 +258,7 @@ fun FormItemComponent(
                 )
 
                 Text(
-                    text = "#${item.id} - ${item.type.name}",
+                    text = "${item.type.name}",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
