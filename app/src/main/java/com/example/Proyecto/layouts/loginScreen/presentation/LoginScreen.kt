@@ -1,6 +1,5 @@
 package com.example.Proyecto.layouts.loginScreen.presentation
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,15 +33,15 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.platform.LocalContext
 import com.example.Proyecto.R
-
 
 @Composable
 fun LoginScreenRoute(
     onLoginSuccess: () -> Unit,
     onForgotPassword: () -> Unit,
     onRegister: () -> Unit,
-    viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
+    viewModel: LoginViewModel = viewModel(factory = LoginViewModel.provideFactory(LocalContext.current))
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

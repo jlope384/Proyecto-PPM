@@ -10,9 +10,11 @@ import kotlinx.coroutines.flow.map
 
 class UserPreferences(private val dataStore: DataStore<Preferences>) {
 
-    val USER_ID_KEY = stringPreferencesKey("user_id")
-    val USER_LOGGED_IN_KEY = booleanPreferencesKey("user_logged_in")
-    val USER_EMAIL_KEY = stringPreferencesKey("user_email")
+    companion object {
+        val USER_ID_KEY = stringPreferencesKey("user_id")
+        val USER_LOGGED_IN_KEY = booleanPreferencesKey("user_logged_in")
+        val USER_EMAIL_KEY = stringPreferencesKey("user_email")
+    }
 
     suspend fun saveUserId(userId: String) {
         dataStore.edit { preferences ->
