@@ -33,7 +33,6 @@ class FormDisplayViewModel : ViewModel() {
 
     private fun loadFormItems() {
         viewModelScope.launch {
-            // Assuming startRepository.getForms() returns List<FormDisplayItem>
             _formItems.value = startRepository.getForms()
         }
     }
