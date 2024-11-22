@@ -105,9 +105,11 @@ dependencies {
     implementation(libs.reorderable)
     implementation(libs.gson)
 
+
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
+
 }
 
 configurations.all {

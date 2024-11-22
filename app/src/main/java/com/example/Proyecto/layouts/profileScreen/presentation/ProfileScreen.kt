@@ -1,10 +1,9 @@
-package com.example.Proyecto.layouts.profileScreen
+package com.example.Proyecto.layouts.profileScreen.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -22,25 +21,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun ProfileScreenRoute(
+    viewModel: ProfileViewModel = viewModel(factory = ProfileViewModel.Factory),
     onBack: () -> Unit,
     onLogout: () -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
     ProfileScreen(
+        uiState = uiState,
         onBack = onBack,
-        onLogout = onLogout
+        onLogout = {
+            viewModel.onEvent(ProfileEvent.LogoutClicked(onLogout))
+        }
     )
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
+    uiState: ProfileState,
     onBack: () -> Unit,
     onLogout: () -> Unit
 ) {
@@ -65,8 +70,40 @@ fun ProfileScreen(
             ProfileItem(label = "Email", value = "example@example.com")
             ProfileItem(label = "Contraseña", value = "***********", isPassword = true)
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = onLogout) {
-                Text("Cerrar sesión")
+
+            if (uiState.isLoading) {
+                Text(
+                    text = "Cerrando sesión...",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            } else {
+                Button(
+                    onClick = onLogout,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text("Cerrar sesión")
+                }
+            }
+
+            uiState.successMessage?.let { message ->
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = message,
+                    color = Color.Green,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
+
+            uiState.errorMessage?.let { message ->
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = message,
+                    color = Color.Red,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
             }
         }
     }
@@ -99,9 +136,11 @@ fun ProfileItem(label: String, value: String, isPassword: Boolean = false) {
                         textStyle = LocalTextStyle.current.copy(color = LocalContentColor.current),
                         modifier = Modifier.weight(1f),
                         decorationBox = { innerTextField ->
-                            Box(modifier = Modifier
-                                .padding(horizontal = 4.dp),
-                                contentAlignment = Alignment.CenterStart) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(horizontal = 4.dp),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
                                 if (value.isEmpty()) {
                                     Text("Ingrese una contraseña", style = MaterialTheme.typography.bodyMedium)
                                 } else {
@@ -110,7 +149,6 @@ fun ProfileItem(label: String, value: String, isPassword: Boolean = false) {
                             }
                         }
                     )
-
                 }
             } else {
                 Text(
@@ -123,11 +161,14 @@ fun ProfileItem(label: String, value: String, isPassword: Boolean = false) {
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewProfileScreen() {
     MaterialTheme {
-        ProfileScreen(onBack = {}, onLogout = {})
+        ProfileScreen(
+            uiState = ProfileState(),
+            onBack = {},
+            onLogout = {}
+        )
     }
 }
