@@ -16,6 +16,8 @@ import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -24,6 +26,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -184,6 +187,7 @@ fun FolderItemRow(
     onEdit: (String) -> Unit
 ) {
     var showMenu by remember { mutableStateOf(false) }
+    var showEditDialog by remember { mutableStateOf(false) }
     var newTitle by remember { mutableStateOf(item.title) }
 
     Row(
@@ -214,8 +218,7 @@ fun FolderItemRow(
                 text = { Text("Modificar nombre") },
                 onClick = {
                     showMenu = false
-                    // Mostrar un diálogo para editar el nombre
-                    // Aquí puedes implementar un diálogo para editar el nombre
+                    showEditDialog = true
                 }
             )
             DropdownMenuItem(
@@ -226,5 +229,33 @@ fun FolderItemRow(
                 }
             )
         }
+    }
+
+    if (showEditDialog) {
+        AlertDialog(
+            onDismissRequest = { showEditDialog = false },
+            title = { Text("Modificar nombre") },
+            text = {
+                OutlinedTextField(
+                    value = newTitle,
+                    onValueChange = { newTitle = it },
+                    label = { Text("Nuevo nombre") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                Button(onClick = {
+                    onEdit(newTitle)
+                    showEditDialog = false
+                }) {
+                    Text("Guardar")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showEditDialog = false }) {
+                    Text("Cancelar")
+                }
+            }
+        )
     }
 }
