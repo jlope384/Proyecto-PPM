@@ -22,6 +22,9 @@ class FolderScreenViewModel : ViewModel() {
     private val _showNoResultsMessage = MutableStateFlow(false)
     val showNoResultsMessage: StateFlow<Boolean> = _showNoResultsMessage
 
+    private val _folderTitle = MutableStateFlow("Folder")
+    val folderTitle: StateFlow<String> = _folderTitle
+
     init {
         loadFolderItems()
     }
@@ -56,13 +59,13 @@ class FolderScreenViewModel : ViewModel() {
         }
     }
 
-     fun searchItems(query: String) {
+    fun searchItems(query: String) {
         _searchQuery.value = query
-         viewModelScope.launch {
-             val results = startRepository.getFolders().filter { it.title.contains(query, ignoreCase = true) }
-             _folderItems.value = results
-             _showNoResultsMessage.value = results.isEmpty()
-         }
+        viewModelScope.launch {
+            val results = startRepository.getFolders().filter { it.title.contains(query, ignoreCase = true) }
+            _folderItems.value = results
+            _showNoResultsMessage.value = results.isEmpty()
+        }
     }
 
     fun updateItemTitle(id: String, newTitle: String) {
@@ -73,5 +76,9 @@ class FolderScreenViewModel : ViewModel() {
 
     fun deleteItem(id: String) {
         _folderItems.value = _folderItems.value.filterNot { it.id == id }
+    }
+
+    fun setFolderTitle(title: String) {
+        _folderTitle.value = title
     }
 }

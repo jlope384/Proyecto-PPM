@@ -12,7 +12,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MoreVert
@@ -48,19 +47,15 @@ fun FolderScreen(onBack: () -> Unit, viewModel: FolderScreenViewModel = viewMode
     val selectedItems by viewModel.selectedItems.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val showNoResultsMessage by viewModel.showNoResultsMessage.collectAsState()
+    val folderTitle by viewModel.folderTitle.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Prueba 1") },
+                title = { Text(folderTitle) },
                 navigationIcon = {
                     IconButton(onClick = { onBack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { /* Accion de editar carpeta o formulario */ }) {
-                        Icon(Icons.Default.Edit, contentDescription = "Edit")
                     }
                 }
             )
@@ -87,14 +82,12 @@ fun FolderScreen(onBack: () -> Unit, viewModel: FolderScreenViewModel = viewMode
                 onSortByDate = { viewModel.sortItemsByDate() }
             )
             if (showNoResultsMessage) {
-                Text("No existe ningún formulario con ese nombre", modifier = Modifier.padding(16.dp))
+                Text("No hay ningún formulario para mostrar", modifier = Modifier.padding(16.dp))
             } else {
                 FolderList(
-                    items = folderItems,
+                    items = folderItems.filter { it.title.startsWith("Formulario") },
                     selectedItems = selectedItems,
-                    onItemSelect = { id, isSelected ->
-                        viewModel.toggleSelectAll(isSelected)
-                    },
+                    onItemSelect = { id, isSelected -> viewModel.toggleSelectAll(isSelected) },
                     onItemDelete = { id -> viewModel.deleteItem(id) },
                     onItemEdit = { id, newTitle -> viewModel.updateItemTitle(id, newTitle) }
                 )
@@ -128,12 +121,6 @@ fun SortOptions(onSortByName: () -> Unit, onSortByDate: () -> Unit) {
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
     ) {
-        Checkbox(
-            checked = false,
-            onCheckedChange = { /* Acción de seleccionar todo */ }
-        )
-        Text(text = "Seleccionar todo", modifier = Modifier.padding(start = 8.dp))
-
         Spacer(modifier = Modifier.weight(1f))
 
         Text(text = "Ordenar por: ")
@@ -205,11 +192,7 @@ fun FolderItemRow(
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (item.title.startsWith("Prueba")) {
-            Icon(Icons.Default.Face, contentDescription = "Folder")
-        } else {
-            Icon(Icons.Default.List, contentDescription = "Formulario")
-        }
+        Icon(Icons.Default.List, contentDescription = "Formulario")
 
         Column(modifier = Modifier.padding(start = 16.dp)) {
             Text(text = item.title, style = MaterialTheme.typography.headlineSmall)
