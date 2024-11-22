@@ -1,3 +1,3 @@
 package com.example.Proyecto.util.type
 
-data class FolderItem(val id: Int, val title: String, val date: String)
+data class FolderItem(val id: String, val title: String , val date: String)

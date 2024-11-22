@@ -9,10 +9,10 @@ import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FolderDestination(val id: Int)
+data class FolderDestination(val id: String)
 
 fun NavController.navigateToFolderScreen(
-    id: Int,
+    id: String,
     navOptions: NavOptions? = null
 ) {
     this.navigate(FolderDestination(id = id), navOptions)

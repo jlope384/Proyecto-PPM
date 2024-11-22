@@ -11,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.Proyecto.util.db.FormItemDb
 import com.example.Proyecto.util.type.FormItem
 import com.example.Proyecto.util.type.FormItemType
 
@@ -23,7 +22,6 @@ fun FillFormRoute(
     FillFormScreen(onSubmit, onBack)
 }
 
-val formDb = FormItemDb()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,7 +58,7 @@ fun FillFormScreen(onSubmit: (Map<String, String>) -> Unit, onBack: () -> Unit) 
                     .weight(1f)
                     .fillMaxWidth()
             ) {
-                val formItems: List<FormItem> = formDb.generateRandomFormItems(10)
+                val formItems: List<FormItem> = emptyList()
                 items(formItems) { item ->
                     FillFormItemComponent(
                         item = item,

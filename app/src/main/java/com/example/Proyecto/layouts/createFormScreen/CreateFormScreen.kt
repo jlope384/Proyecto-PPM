@@ -27,7 +27,8 @@ import org.burnoutcrew.reorderable.*
 @Composable
 fun CreateFormRoute(
     onCreateFormSuccess: () -> Unit,
-    id: Int? = null,
+    id: String? = null,
+    folderId: String? = null,
     onBack: () -> Unit,
     viewModel: CreateFormViewModel = viewModel()
 ) {

@@ -87,7 +87,7 @@ class CreateFormViewModel : ViewModel() {
             }
             is FormUIEvent.ItemAdded -> {
                 val newItem = FormItem(
-                    id = (_formState.value.items.maxOfOrNull { it.id } ?: 0) + 1,
+                    id = UUID.randomUUID().toString(),
                     type = event.type,
                     question = event.question,
                     options = when (event.type) {
@@ -183,7 +183,7 @@ class CreateFormViewModel : ViewModel() {
                 val formId = formsRepository.saveToFirestore(_formState)
                 _formState.update {
                     it.copy(
-                        id = formId.toInt(),
+                        id = formId,
                         isLoading = false,
                         isSaved = true,
                         error = null

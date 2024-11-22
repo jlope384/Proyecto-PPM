@@ -14,7 +14,7 @@ class FormsRepositoryImpl : FormsRepository {
     private val loginRepository = FirebaseLoginRepository()
     override suspend fun saveToFirestore(_formState: MutableStateFlow<FormState>): String {
         val formJson = formToJson(_formState = _formState)
-        val formId = _formState.value.id?.toString() ?: UUID.randomUUID().toString()
+        val formId = _formState.value.id ?: UUID.randomUUID().toString()
 
         val formData = hashMapOf(
             "id" to formId,
@@ -22,7 +22,8 @@ class FormsRepositoryImpl : FormsRepository {
             "description" to _formState.value.description,
             "items" to _formState.value.items,
             "lastModified" to _formState.value.lastModified,
-            "jsonData" to formJson
+            "jsonData" to formJson,
+            "folderId" to _formState.value.folderId
         )
 
         try {

@@ -169,10 +169,10 @@ fun SortOptions(onSortByName: () -> Unit, onSortByDate: () -> Unit) {
 @Composable
 fun FolderList(
     items: List<FolderItem>,
-    selectedItems: Set<Int>,
-    onItemSelect: (Int, Boolean) -> Unit,
-    onItemDelete: (Int) -> Unit,
-    onItemEdit: (Int, String) -> Unit
+    selectedItems: Set<String>,
+    onItemSelect: (String, Boolean) -> Unit,
+    onItemDelete: (String) -> Unit,
+    onItemEdit: (String, String) -> Unit
 ) {
     LazyColumn {
         items(items) { item ->

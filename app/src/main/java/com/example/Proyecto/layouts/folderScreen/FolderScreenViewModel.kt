@@ -1,17 +1,20 @@
 import androidx.lifecycle.ViewModel
-import com.example.Proyecto.util.db.FolderItemDb
+import androidx.lifecycle.viewModelScope
+import com.example.Proyecto.layouts.startScreen.StartRepositoryImpl
 import com.example.Proyecto.util.type.FolderItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class FolderScreenViewModel : ViewModel() {
+    private val startRepository = StartRepositoryImpl()
     private val _folderItems = MutableStateFlow<List<FolderItem>>(emptyList())
     val folderItems: StateFlow<List<FolderItem>> = _folderItems
 
-    private val _selectedItems = MutableStateFlow<Set<Int>>(emptySet())
-    val selectedItems: StateFlow<Set<Int>> = _selectedItems
+    private val _selectedItems = MutableStateFlow<Set<String>>(emptySet())
+    val selectedItems: StateFlow<Set<String>> = _selectedItems
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
@@ -19,14 +22,14 @@ class FolderScreenViewModel : ViewModel() {
     private val _showNoResultsMessage = MutableStateFlow(false)
     val showNoResultsMessage: StateFlow<Boolean> = _showNoResultsMessage
 
-    private val folderDb = FolderItemDb()
-
     init {
         loadFolderItems()
     }
 
     private fun loadFolderItems() {
-        _folderItems.value = folderDb.generateRandomFolderItems(10)
+        viewModelScope.launch {
+            _folderItems.value = startRepository.getFolders()
+        }
     }
 
     fun toggleSelectAll(selectAll: Boolean) {
@@ -53,20 +56,22 @@ class FolderScreenViewModel : ViewModel() {
         }
     }
 
-    fun searchItems(query: String) {
+     fun searchItems(query: String) {
         _searchQuery.value = query
-        val results = folderDb.generateRandomFolderItems(10).filter { it.title.contains(query, ignoreCase = true) }
-        _folderItems.value = results
-        _showNoResultsMessage.value = results.isEmpty()
+         viewModelScope.launch {
+             val results = startRepository.getFolders().filter { it.title.contains(query, ignoreCase = true) }
+             _folderItems.value = results
+             _showNoResultsMessage.value = results.isEmpty()
+         }
     }
 
-    fun updateItemTitle(id: Int, newTitle: String) {
+    fun updateItemTitle(id: String, newTitle: String) {
         _folderItems.value = _folderItems.value.map {
             if (it.id == id) it.copy(title = newTitle) else it
         }
     }
 
-    fun deleteItem(id: Int) {
+    fun deleteItem(id: String) {
         _folderItems.value = _folderItems.value.filterNot { it.id == id }
     }
 }

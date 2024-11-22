@@ -8,13 +8,14 @@ import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FillFormDestination(val id: Int)
+data class FillFormDestination(val id: String, val folderId: String? = null)
 
 fun NavController.navigateToFillFormScreen(
-    id: Int,
+    id: String,
+    folderId: String? = null,
     navOptions: NavOptions? = null
 ) {
-    this.navigate(FillFormDestination(id = id), navOptions)
+    this.navigate(FillFormDestination(id = id, folderId = folderId), navOptions)
 }
 
 fun NavGraphBuilder.fillFormScreen(

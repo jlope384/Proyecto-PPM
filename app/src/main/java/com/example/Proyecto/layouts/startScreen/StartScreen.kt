@@ -1,5 +1,6 @@
 package com.example.Proyecto.layouts.startScreen
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -7,17 +8,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -30,7 +33,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,23 +51,21 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.Proyecto.R
-import com.example.Proyecto.util.db.LDItemDb
 import com.example.Proyecto.util.type.FolderItem
-import com.example.Proyecto.util.type.FormItem
-import com.example.Proyecto.util.type.LDItemType
 import com.example.Proyecto.util.type.StartDropdownItem
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.TextButton
+import com.example.Proyecto.util.type.FormDisplayItem
 
-
-
-private val ldItemDb = LDItemDb()
 
 @Composable
 fun StartScreenRoute(
     onBack: () -> Unit,
-    onFolderClick: (Int) -> Unit,
-    onFillFormClick: (Int) -> Unit,
-    onEditFormClick: (Int?) -> Unit,
+    onFolderClick: (String) -> Unit,
+    onFillFormClick: (String, String?) -> Unit,
+    onEditFormClick: (String?, String?) -> Unit,
     viewModel: StartScreenViewModel = StartScreenViewModel()
 ) {
     val state by viewModel.startState.collectAsStateWithLifecycle()
@@ -75,7 +75,9 @@ fun StartScreenRoute(
         onFolderClick = onFolderClick,
         onFillFormClick = onFillFormClick,
         onEditFormClick = onEditFormClick,
-        onRetry = { viewModel.retryLoading() }
+        onRetry = { viewModel.retryLoading() },
+        onFolderCreate = { title -> viewModel.createFolder(title) },
+        onFormCreate = {onEditFormClick(null, null)}
     )
 }
 
@@ -84,11 +86,14 @@ fun StartScreenRoute(
 fun StartScreen(
     state: StartScreenState,
     onBack: () -> Unit,
-    onFolderClick: (Int) -> Unit,
-    onFillFormClick: (Int) -> Unit,
-    onEditFormClick: (Int?) -> Unit,
-    onRetry: () -> Unit
+    onFolderClick: (String) -> Unit,
+    onFillFormClick: (String, String?) -> Unit,
+    onEditFormClick: (String?, String?) -> Unit,
+    onRetry: () -> Unit,
+    onFolderCreate: (String) -> Unit,
+    onFormCreate: () -> Unit
 ) {
+    var showAddItemDialog by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -105,38 +110,52 @@ fun StartScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Acción de crear nuevo formulario o carpeta */ },
+                onClick = { showAddItemDialog = true },
                 containerColor = MaterialTheme.colorScheme.secondary
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
             }
         }
     ) { paddingValues ->
-        when {
-            state.isLoading -> LoadingScreen()
-            state.error != null -> ErrorScreen(
-                message = state.error!!,
-                onRetry = onRetry
-            )
-            else -> ContentScreen(
-                folders = state.folders,
-                forms = state.forms,
-                onFolderClick = onFolderClick,
-                onFillFormClick = onFillFormClick,
-                onEditFormClick = onEditFormClick,
-                paddingValues = paddingValues
-            )
+        when (state.isLoading) {
+            true -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+            false -> {
+                if (state.error != null) {
+                    ErrorScreen(message = state.error!!, onRetry = onRetry)
+                } else {
+                    ContentScreen(
+                        folders = state.folders,
+                        forms = state.forms,
+                        onFolderClick = onFolderClick,
+                        onFillFormClick = onFillFormClick,
+                        onEditFormClick = onEditFormClick,
+                        paddingValues = paddingValues
+                    )
+                }
+            }
         }
     }
-}
-
-@Composable
-fun LoadingScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator()
+    if (showAddItemDialog) {
+        AddItemDialog(
+            onDismiss = { showAddItemDialog = false },
+            onAddItem = { isFolder, title ->
+                showAddItemDialog = false
+                if (isFolder) {
+                    onFolderCreate(title)
+                    println("Added Folder: $title")
+                } else {
+                    onFormCreate()
+                    println("Added Form: $title")
+                }
+            }
+        )
     }
 }
 
@@ -159,10 +178,10 @@ fun ErrorScreen(message: String, onRetry: () -> Unit) {
 @Composable
 fun ContentScreen(
     folders: List<FolderItem>,
-    forms: List<FormItem>,
-    onFolderClick: (Int) -> Unit,
-    onFillFormClick: (Int) -> Unit,
-    onEditFormClick: (Int?) -> Unit,
+    forms: List<FormDisplayItem>,
+    onFolderClick: (String) -> Unit,
+    onFillFormClick: (String, String?) -> Unit,
+    onEditFormClick: (String?, String?) -> Unit,
     paddingValues: PaddingValues
 ) {
     Column(
@@ -187,14 +206,16 @@ fun ContentScreen(
                 folders.forEach { folder: FolderItem ->
                     item { ldFolder(onFolderClick = onFolderClick, id = folder.id, name = folder.title) }
                 }
-                forms.forEach { form: FormItem ->
+                forms.forEach { form: FormDisplayItem ->
                     item {
-                        ldForms(
-                            onFillFormClick = onFillFormClick,
-                            onEditFormClick = onEditFormClick,
-                            id = form.id,
-                            name = form.question
-                        )
+                        when(form.folderId){
+                            null -> ldForms(
+                                onFillFormClick = onFillFormClick,
+                                onEditFormClick = onEditFormClick,
+                                id = form.id,
+                                name = form.title
+                            )
+                        }
                     }
                 }
             }
@@ -204,10 +225,11 @@ fun ContentScreen(
 
 
 @Composable
-fun ldForms(onFillFormClick: (Int) -> Unit,
-            onEditFormClick: (Int?) -> Unit,
-            id: Int,
-            name: String)
+fun ldForms(
+    onFillFormClick: (String, String?) -> Unit,
+    onEditFormClick: (String?, String?) -> Unit,
+    id: String,
+    name: String)
 {
     val dropdownItems: List<StartDropdownItem> = listOf(
         StartDropdownItem("Editar"),
@@ -260,8 +282,8 @@ fun ldForms(onFillFormClick: (Int) -> Unit,
         dropdownItems.forEach {
             DropdownMenuItem(onClick = {
                 when(it.Option){
-                    "Editar" -> onEditFormClick(id)
-                    "Llenar" -> onFillFormClick(id)
+                    "Editar" -> onEditFormClick(id, null)
+                    "Llenar" -> onFillFormClick(id, null)
                 }
                 isContextMenuVisible = false
             }, text = {Text(text = it.Option)})
@@ -270,7 +292,7 @@ fun ldForms(onFillFormClick: (Int) -> Unit,
 }
 
 @Composable
-fun ldFolder(onFolderClick: (Int) -> Unit, id: Int, name: String) {
+fun ldFolder(onFolderClick: (String) -> Unit, id: String, name: String) {
     Column(modifier = Modifier
         ,horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         Image(painter = painterResource(id = R.drawable.ldfolder), contentDescription = "Folder",
@@ -281,5 +303,65 @@ fun ldFolder(onFolderClick: (Int) -> Unit, id: Int, name: String) {
         )
         Text(text = name, style = MaterialTheme.typography.labelLarge)
     }
+}
+
+@Composable
+fun AddItemDialog(
+    onDismiss: () -> Unit,
+    onAddItem: (isFolder: Boolean, title: String) -> Unit
+) {
+    var selectedOption by remember { mutableStateOf<String?>(null) }
+    var title by remember { mutableStateOf("") }
+    val options = listOf("Folder", "Form")
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Add New Item") },
+        text = {
+            Column {
+                Text(text = "Select the type:")
+                options.forEach { option ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { selectedOption = option }
+                            .padding(vertical = 8.dp)
+                    ) {
+                        RadioButton(
+                            selected = selectedOption == option,
+                            onClick = { selectedOption = option }
+                        )
+                        Text(text = option)
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Title") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    selectedOption?.let { option ->
+                        onAddItem(option == "Folder", title)
+                    }
+                },
+                enabled = selectedOption != null && title.isNotBlank()
+            ) {
+                Text(text = "Add")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = "Cancel")
+            }
+        }
+    )
 }
 

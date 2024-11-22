@@ -9,9 +9,9 @@ data object StartDestination
 
 fun NavGraphBuilder.startScreen(
     onBack: () -> Unit,
-    onFolderClick: (Int) -> Unit,
-    onFillFormClick: (Int) -> Unit,
-    onEditFormClick: (Int?) -> Unit
+    onFolderClick: (String) -> Unit,
+    onFillFormClick: (String, String?) -> Unit,
+    onEditFormClick: (String?, String?) -> Unit
 ) {
     composable<StartDestination> {
         StartScreenRoute(

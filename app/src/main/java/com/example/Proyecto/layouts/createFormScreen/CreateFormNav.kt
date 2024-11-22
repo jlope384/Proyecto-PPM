@@ -9,13 +9,14 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class CreateFormDestination(val id: Int?)
+data class CreateFormDestination(val id: String?, val folderId: String?)
 
 fun NavController.navigateToCreateFormScreen(
-    id: Int? = null,
+    id: String? = null,
+    folderId: String? = null,
     navOptions: NavOptions? = null
 ) {
-    this.navigate(CreateFormDestination(id = id), navOptions)
+    this.navigate(CreateFormDestination(id = id, folderId = folderId), navOptions)
 }
 
 fun NavGraphBuilder.createFormScreen(
@@ -25,6 +26,6 @@ fun NavGraphBuilder.createFormScreen(
     ) {
     composable<CreateFormDestination> { backStackEntry ->
         val backStackParams: CreateFormDestination = backStackEntry.toRoute()
-        CreateFormRoute(id = backStackParams.id, onCreateFormSuccess = onCreateFormClick, onBack = onBack)
+        CreateFormRoute(id = backStackParams.id, folderId = backStackParams.folderId, onCreateFormSuccess = onCreateFormClick, onBack = onBack)
     }
 }
