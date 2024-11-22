@@ -35,6 +35,7 @@ fun CreateFormRoute(
     val formState by viewModel.formState.collectAsState()
     val validationErrors by viewModel.validationErrors.collectAsStateWithLifecycle()
     LaunchedEffect(key1 = id) {
+        println("CreateFormRoute: id = $folderId")
         viewModel.loadFromFirestore(id.toString())
     }
 
@@ -43,7 +44,9 @@ fun CreateFormRoute(
         validationErrors = validationErrors,
         onEvent = viewModel::onEvent,
         onBack = onBack,
-        onSuccess = onCreateFormSuccess
+        onSuccess = onCreateFormSuccess,
+        onSave = viewModel::saveForm,
+        folderId = folderId
     )
 }
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,7 +56,9 @@ fun CreateFormScreen(
     validationErrors: List<String>,
     onEvent: (FormUIEvent) -> Unit,
     onBack: () -> Unit,
-    onSuccess: () -> Unit
+    onSuccess: () -> Unit,
+    onSave: (String?) -> Unit,
+    folderId: String? = null
 ) {
     var showAddItemDialog by remember { mutableStateOf(false) }
     var showExitDialog by remember { mutableStateOf(false) }
@@ -74,7 +79,7 @@ fun CreateFormScreen(
                 title = {
                     Column {
                         Text(
-                            text = "Create Form",
+                            text = "Crear Formulario",
                             fontWeight = FontWeight.Bold
                         )
                         Text(
@@ -92,7 +97,11 @@ fun CreateFormScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { onEvent(FormUIEvent.SaveForm) }) {
+                    IconButton(onClick = {
+                        println("folder id es en ui")
+                        println(folderId)
+                        onSave(folderId)
+                    }) {
                         Icon(Icons.Default.Done, "Save")
                     }
                     IconButton(onClick = { onEvent(FormUIEvent.ExportForm) }) {
@@ -151,7 +160,7 @@ fun CreateFormScreen(
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            "Please correct the following errors:",
+                            "Porfavor corrija los siguientes errores:",
                             color = MaterialTheme.colorScheme.onErrorContainer,
                             style = MaterialTheme.typography.titleSmall
                         )
@@ -204,16 +213,16 @@ fun CreateFormScreen(
         if (showExitDialog) {
             AlertDialog(
                 onDismissRequest = { showExitDialog = false },
-                title = { Text("Exit without saving?") },
-                text = { Text("Any unsaved changes will be lost.") },
+                title = { Text("Seguro que desea salir?") },
+                text = { Text("Asegurese de haber guardado su formulario.") },
                 confirmButton = {
                     TextButton(onClick = onBack) {
-                        Text("Exit")
+                        Text("Salir")
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showExitDialog = false }) {
-                        Text("Cancel")
+                        Text("Cancelar")
                     }
                 }
             )
@@ -284,7 +293,7 @@ fun FormItemComponent(
                     value = "",
                     onValueChange = {},
                     enabled = false,
-                    label = { Text("Short answer preview") },
+                    label = { Text("Ejemplo de respuesta corta") },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -292,7 +301,7 @@ fun FormItemComponent(
                     value = "",
                     onValueChange = {},
                     enabled = false,
-                    label = { Text("Long answer preview") },
+                    label = { Text("Ejemplo de respuesta larga") },
                     modifier = Modifier.fillMaxWidth(),
                     minLines = 3
                 )
@@ -341,7 +350,7 @@ fun FormItemComponent(
                 onDismissRequest = { expanded = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text("Edit") },
+                    text = { Text("Editar") },
                     onClick = {
                         expanded = false
                         showEditDialog = true
@@ -349,7 +358,7 @@ fun FormItemComponent(
                     leadingIcon = { Icon(Icons.Default.Edit, null) }
                 )
                 DropdownMenuItem(
-                    text = { Text("Delete") },
+                    text = { Text("Eliminar") },
                     onClick = {
                         expanded = false
                         onDelete()
@@ -358,7 +367,7 @@ fun FormItemComponent(
                 )
                 if (item.type == FormItemType.MultipleChoice) {
                     DropdownMenuItem(
-                        text = { Text("Edit Options") },
+                        text = { Text("Editar Opciones") },
                         onClick = {
                             expanded = false
                             showEditDialog = true
@@ -394,13 +403,13 @@ fun EditItemDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Edit Question") },
+        title = { Text("Editar Pregunta") },
         text = {
             Column(modifier = Modifier.padding(vertical = 8.dp)) {
                 OutlinedTextField(
                     value = question,
                     onValueChange = { question = it },
-                    label = { Text("Question") },
+                    label = { Text("Pregunta") },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -444,7 +453,7 @@ fun EditItemDialog(
                         OutlinedTextField(
                             value = newOption,
                             onValueChange = { newOption = it },
-                            label = { Text("New option") },
+                            label = { Text("Nueva Opcion") },
                             modifier = Modifier.weight(1f)
                         )
                         IconButton(
@@ -467,12 +476,12 @@ fun EditItemDialog(
                     onUpdate(question, if (item.type == FormItemType.MultipleChoice) options else null)
                 }
             ) {
-                Text("Save")
+                Text("Guardar")
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text("Cancelar")
             }
         }
     )
@@ -489,7 +498,7 @@ fun AddItemDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Add New Question") },
+        title = { Text("Agregar nueva Pregunta") },
         text = {
             Column {
                 OutlinedTextField(
@@ -498,7 +507,7 @@ fun AddItemDialog(
                         question = it
                         error = ""
                     },
-                    label = { Text("Question") },
+                    label = { Text("Pregunta") },
                     modifier = Modifier.fillMaxWidth(),
                     isError = error.isNotEmpty(),
                     supportingText = if (error.isNotEmpty()) {
@@ -507,7 +516,7 @@ fun AddItemDialog(
                 )
 
                 Text(
-                    "Question Type:",
+                    "Tipo de pregunta:",
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
                 )
@@ -528,10 +537,10 @@ fun AddItemDialog(
                             Text(type.name)
                             Text(
                                 when (type) {
-                                    FormItemType.ShortAnswer -> "Short text response"
-                                    FormItemType.LongAnswer -> "Paragraph response"
-                                    FormItemType.MultipleChoice -> "Multiple choice options"
-                                    FormItemType.Scale -> "Numeric scale (1-5)"
+                                    FormItemType.ShortAnswer -> "Pregunta corta"
+                                    FormItemType.LongAnswer -> "Pregunta larga"
+                                    FormItemType.MultipleChoice -> "Opciones multiples"
+                                    FormItemType.Scale -> "Escala (1-5)"
                                 },
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -545,18 +554,18 @@ fun AddItemDialog(
             Button(
                 onClick = {
                     if (question.isBlank()) {
-                        error = "Question cannot be empty"
+                        error = "Pregunta no puede estar vacia"
                         return@Button
                     }
                     onAddItem(selectedType, question)
                 }
             ) {
-                Text("Add")
+                Text("Agregar")
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text("Cancelar")
             }
         }
     )

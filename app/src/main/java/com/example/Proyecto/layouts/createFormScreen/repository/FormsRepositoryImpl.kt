@@ -45,16 +45,20 @@ class FormsRepositoryImpl : FormsRepository {
     // Cargar formulario desde Firestore
     override suspend fun loadFromFirestore(formId: String): FormState {
         try {
-            val document = firestore.collection("forms")
-                .document(formId)
-                .get()
-                .await()
+            loginRepository.getCurrentUserId()?.let {
+                val document = firestore.collection("users")
+                    .document(it)
+                    .collection("forms")
+                    .document(formId)
+                    .get()
+                    .await()
 
-            if (document != null && document.exists()) {
-                val jsonData = document.getString("jsonData")
-                if (jsonData != null) {
-                    val form = jsonToForm(jsonData)
-                    return form
+                if (document != null && document.exists()) {
+                    val jsonData = document.getString("jsonData")
+                    if (jsonData != null) {
+                        val form = jsonToForm(jsonData)
+                        return form
+                    }
                 }
             }
         } catch (e: Exception) {

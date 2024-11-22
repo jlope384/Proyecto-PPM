@@ -1,53 +1,35 @@
+package com.example.Proyecto.layouts.folderScreen
+
+import FormDisplayViewModel
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Proyecto.util.type.FolderItem
+import com.example.Proyecto.util.type.FormDisplayItem
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FolderScreen(onBack: () -> Unit, id: String, onCreateForm : (String?, String?) -> Unit, onFillForm: (String, String?) -> Unit) {
-    val viewModel: FolderScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
-    val folderItems by viewModel.folderItems.collectAsState()
+fun FormDisplayScreen(
+    onBack: () -> Unit,
+    id: String,
+    onCreateForm: (String?, String?) -> Unit,
+    onFillForm: (String, String?) -> Unit
+) {
+    val viewModel: FormDisplayViewModel = viewModel()
+    val formItems by viewModel.formItems.collectAsState()
     val selectedItems by viewModel.selectedItems.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val showNoResultsMessage by viewModel.showNoResultsMessage.collectAsState()
@@ -58,7 +40,7 @@ fun FolderScreen(onBack: () -> Unit, id: String, onCreateForm : (String?, String
             TopAppBar(
                 title = { Text(folderTitle) },
                 navigationIcon = {
-                    IconButton(onClick = { onBack() }) {
+                    IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
@@ -75,25 +57,55 @@ fun FolderScreen(onBack: () -> Unit, id: String, onCreateForm : (String?, String
                 }
             }
         }
-    ) {
-        Column(modifier = Modifier.padding(it)) {
+    ) { paddingValues ->
+        Column(modifier = Modifier.padding(paddingValues)) {
             SearchBar(
                 query = searchQuery,
                 onQueryChange = { viewModel.searchItems(it) }
             )
             SortOptions(
-                onSortByName = { viewModel.sortItemsByName() },
-                onSortByDate = { viewModel.sortItemsByDate() }
+                onSortByName = { viewModel.sortItemsByName() }
             )
             if (showNoResultsMessage) {
-                Text("No hay ningún formulario para mostrar", modifier = Modifier.padding(16.dp))
+                Text(
+                    "No hay ningún formulario para mostrar",
+                    modifier = Modifier.padding(16.dp)
+                )
             } else {
-                FolderList(
-                    items = folderItems.filter { it.title.startsWith("Formulario") },
+                FormList(
+                    items = formItems,
                     selectedItems = selectedItems,
-                    onItemSelect = { id, isSelected -> viewModel.toggleSelectAll(isSelected) },
+                    onItemSelect = { id, isSelected -> viewModel.toggleItemSelection(id, isSelected) },
                     onItemDelete = { id -> viewModel.deleteItem(id) },
-                    onItemEdit = { id, newTitle -> viewModel.updateItemTitle(id, newTitle) }
+                    onItemEdit = { id, newTitle -> viewModel.updateItemTitle(id, newTitle) },
+                    onItemClick = { formId -> onFillForm(formId, id) },
+                    currentFolderId = id
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun FormList(
+    items: List<FormDisplayItem>,
+    selectedItems: Set<String>,
+    onItemSelect: (String, Boolean) -> Unit,
+    onItemDelete: (String) -> Unit,
+    onItemEdit: (String, String) -> Unit,
+    onItemClick: (String) -> Unit,
+    currentFolderId : String
+) {
+    LazyColumn {
+        items(items) { item ->
+            if (item.folderId.equals(currentFolderId)) {
+                FormItemRow(
+                    item = item,
+                    isSelected = selectedItems.contains(item.id),
+                    onSelect = { isSelected -> onItemSelect(item.id, isSelected) },
+                    onDelete = { onItemDelete(item.id) },
+                    onEdit = { newTitle -> onItemEdit(item.id, newTitle) },
+                    onClick = { onItemClick(item.id) }
                 )
             }
         }
@@ -110,13 +122,14 @@ fun SearchBar(query: String, onQueryChange: (String) -> Unit) {
             .fillMaxWidth()
             .padding(16.dp),
         leadingIcon = {
-            Icon(Icons.Default.Search, contentDescription = "Buscar")
-        }
+            Icon(Icons.Default.Search, contentDescription = "Search")
+        },
+        singleLine = true
     )
 }
 
 @Composable
-fun SortOptions(onSortByName: () -> Unit, onSortByDate: () -> Unit) {
+fun SortOptions(onSortByName: () -> Unit) {
     var expanded by remember { mutableStateOf(false) }
 
     Row(
@@ -139,13 +152,6 @@ fun SortOptions(onSortByName: () -> Unit, onSortByDate: () -> Unit) {
                 onDismissRequest = { expanded = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text("Fecha de modificación") },
-                    onClick = {
-                        onSortByDate()
-                        expanded = false
-                    }
-                )
-                DropdownMenuItem(
                     text = { Text("Nombre") },
                     onClick = {
                         onSortByName()
@@ -158,33 +164,13 @@ fun SortOptions(onSortByName: () -> Unit, onSortByDate: () -> Unit) {
 }
 
 @Composable
-fun FolderList(
-    items: List<FolderItem>,
-    selectedItems: Set<String>,
-    onItemSelect: (String, Boolean) -> Unit,
-    onItemDelete: (String) -> Unit,
-    onItemEdit: (String, String) -> Unit
-) {
-    LazyColumn {
-        items(items) { item ->
-            FolderItemRow(
-                item = item,
-                isSelected = selectedItems.contains(item.id),
-                onSelect = { isSelected -> onItemSelect(item.id, isSelected) },
-                onDelete = { onItemDelete(item.id) },
-                onEdit = { newTitle -> onItemEdit(item.id, newTitle) }
-            )
-        }
-    }
-}
-
-@Composable
-fun FolderItemRow(
-    item: FolderItem,
+fun FormItemRow(
+    item: FormDisplayItem,
     isSelected: Boolean,
     onSelect: (Boolean) -> Unit,
     onDelete: () -> Unit,
-    onEdit: (String) -> Unit
+    onEdit: (String) -> Unit,
+    onClick: () -> Unit
 ) {
     var showMenu by remember { mutableStateOf(false) }
     var showEditDialog by remember { mutableStateOf(false) }
@@ -193,18 +179,28 @@ fun FolderItemRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onSelect(!isSelected) }
+            .clickable { onClick() }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(Icons.Default.List, contentDescription = "Formulario")
+        Checkbox(
+            checked = isSelected,
+            onCheckedChange = { onSelect(it) }
+        )
 
-        Column(modifier = Modifier.padding(start = 16.dp)) {
-            Text(text = item.title, style = MaterialTheme.typography.headlineSmall)
-            Text(text = item.date, style = MaterialTheme.typography.bodyMedium)
-        }
+        Icon(
+            Icons.Default.List,
+            contentDescription = "Form",
+            modifier = Modifier.padding(start = 8.dp)
+        )
 
-        Spacer(modifier = Modifier.weight(1f))
+        Text(
+            text = item.title,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 16.dp)
+        )
 
         IconButton(onClick = { showMenu = true }) {
             Icon(Icons.Default.MoreVert, contentDescription = "More options")
@@ -239,8 +235,7 @@ fun FolderItemRow(
                 OutlinedTextField(
                     value = newTitle,
                     onValueChange = { newTitle = it },
-                    label = { Text("Nuevo nombre") },
-                    modifier = Modifier.fillMaxWidth()
+                    label = { Text("Nuevo nombre") }
                 )
             },
             confirmButton = {

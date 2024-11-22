@@ -2,16 +2,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Proyecto.layouts.startScreen.StartRepositoryImpl
 import com.example.Proyecto.util.type.FolderItem
+import com.example.Proyecto.util.type.FormDisplayItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class FolderScreenViewModel : ViewModel() {
+class FormDisplayViewModel : ViewModel() {
     private val startRepository = StartRepositoryImpl()
-    private val _folderItems = MutableStateFlow<List<FolderItem>>(emptyList())
-    val folderItems: StateFlow<List<FolderItem>> = _folderItems
+
+    private val _formItems = MutableStateFlow<List<FormDisplayItem>>(emptyList())
+    val formItems: StateFlow<List<FormDisplayItem>> = _formItems
 
     private val _selectedItems = MutableStateFlow<Set<String>>(emptySet())
     val selectedItems: StateFlow<Set<String>> = _selectedItems
@@ -22,60 +24,56 @@ class FolderScreenViewModel : ViewModel() {
     private val _showNoResultsMessage = MutableStateFlow(false)
     val showNoResultsMessage: StateFlow<Boolean> = _showNoResultsMessage
 
-    private val _folderTitle = MutableStateFlow("Folder")
+    private val _folderTitle = MutableStateFlow("Forms")
     val folderTitle: StateFlow<String> = _folderTitle
 
     init {
-        loadFolderItems()
+        loadFormItems()
     }
 
-    private fun loadFolderItems() {
+    private fun loadFormItems() {
         viewModelScope.launch {
-            _folderItems.value = startRepository.getFolders()
+            // Assuming startRepository.getForms() returns List<FormDisplayItem>
+            _formItems.value = startRepository.getForms()
         }
     }
 
-    fun toggleSelectAll(selectAll: Boolean) {
-        _selectedItems.value = if (selectAll) {
-            _folderItems.value.map { it.id }.toSet()
+    fun toggleItemSelection(id: String, isSelected: Boolean) {
+        _selectedItems.value = if (isSelected) {
+            _selectedItems.value + id
         } else {
-            emptySet()
+            _selectedItems.value - id
         }
     }
 
     fun deleteSelectedItems() {
-        _folderItems.value = _folderItems.value.filterNot { _selectedItems.value.contains(it.id) }
+        _formItems.value = _formItems.value.filterNot { _selectedItems.value.contains(it.id) }
         _selectedItems.value = emptySet()
     }
 
     fun sortItemsByName() {
-        _folderItems.value = _folderItems.value.sortedBy { it.title }
-    }
-
-    fun sortItemsByDate() {
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        _folderItems.value = _folderItems.value.sortedBy {
-            LocalDate.parse(it.date, formatter)
-        }
+        _formItems.value = _formItems.value.sortedBy { it.title }
     }
 
     fun searchItems(query: String) {
         _searchQuery.value = query
         viewModelScope.launch {
-            val results = startRepository.getFolders().filter { it.title.contains(query, ignoreCase = true) }
-            _folderItems.value = results
+            val results = startRepository.getForms().filter {
+                it.title.contains(query, ignoreCase = true)
+            }
+            _formItems.value = results
             _showNoResultsMessage.value = results.isEmpty()
         }
     }
 
     fun updateItemTitle(id: String, newTitle: String) {
-        _folderItems.value = _folderItems.value.map {
+        _formItems.value = _formItems.value.map {
             if (it.id == id) it.copy(title = newTitle) else it
         }
     }
 
     fun deleteItem(id: String) {
-        _folderItems.value = _folderItems.value.filterNot { it.id == id }
+        _formItems.value = _formItems.value.filterNot { it.id == id }
     }
 
     fun setFolderTitle(title: String) {

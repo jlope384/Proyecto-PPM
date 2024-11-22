@@ -1,5 +1,6 @@
 package com.example.Proyecto.layouts.fillFormScreen
 
+import FillFormRoute
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -26,7 +27,7 @@ fun NavGraphBuilder.fillFormScreen(
         val backStackParams: FillFormDestination = backStackEntry.toRoute()
         FillFormRoute(
             onBack = onBack,
-            onSubmit = onSubmit
+            id = backStackParams.id,
         )
     }
 }

@@ -61,7 +61,7 @@ class StartRepositoryImpl: StartRepository {
                 try {
                     val id = document.getString("id")
                     val title = document.getString("title") ?: ""
-                    val folderId = document.getString("folderId")?.toInt()
+                    val folderId = document.getString("folderId")
 
                     if (id != null) {
                         formsGot += FormDisplayItem(id, title, folderId)

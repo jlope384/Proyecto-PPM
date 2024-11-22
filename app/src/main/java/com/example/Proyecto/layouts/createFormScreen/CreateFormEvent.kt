@@ -10,7 +10,6 @@ public sealed class FormUIEvent {
     data class ItemRemoved(val id: String) : FormUIEvent()
     data class ItemMoved(val fromIndex: Int, val toIndex: Int) : FormUIEvent()
     data class ItemUpdated(val id: String, val question: String, val options: List<String>? = null) : FormUIEvent()
-    data object SaveForm : FormUIEvent()
     data object ExportForm : FormUIEvent()
     data class ImportForm(val jsonString: String) : FormUIEvent()
     data class ShareForm(val context: Context) : FormUIEvent()

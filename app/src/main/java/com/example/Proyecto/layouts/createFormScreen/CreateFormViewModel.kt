@@ -27,29 +27,6 @@ class CreateFormViewModel : ViewModel() {
     private val _validationErrors = MutableStateFlow<List<String>>(emptyList())
     val validationErrors: StateFlow<List<String>> = _validationErrors.asStateFlow()
 
-    // funcion placeholder
-    private fun loadForm() {
-        viewModelScope.launch {
-            _formState.update { it.copy(isLoading = true) }
-            try {
-                _formState.update {
-                    it.copy(
-                        isLoading = false,
-                        title = "New Form",
-                        description = "Form Description"
-                    )
-                }
-            } catch (e: Exception) {
-                _formState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "Failed to load form: ${e.message}"
-                    )
-                }
-            }
-        }
-    }
-
     fun loadFromFirestore(formId: String) {
         if (formId.isBlank())
         {
@@ -137,7 +114,6 @@ class CreateFormViewModel : ViewModel() {
                     )
                 }
             }
-            FormUIEvent.SaveForm -> saveForm()
             FormUIEvent.ExportForm -> exportForm()
             is FormUIEvent.ImportForm -> importForm(event.jsonString)
             is FormUIEvent.ShareForm -> shareForm(event.context)
@@ -167,8 +143,10 @@ class CreateFormViewModel : ViewModel() {
         return errors
     }
 
-    private fun saveForm() {
+    fun saveForm(folderId: String? = null) {
         viewModelScope.launch {
+            println("folder id es")
+            println(folderId)
             val errors = validateForm()
             if (errors.isNotEmpty()) {
                 _validationErrors.value = errors
@@ -178,7 +156,8 @@ class CreateFormViewModel : ViewModel() {
             _formState.update { it.copy(isLoading = true) }
             try {
                 _formState.update { it.copy(
-                    lastModified = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                    lastModified = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                    folderId = folderId
                 ) }
                 val formId = formsRepository.saveToFirestore(_formState)
                 _formState.update {

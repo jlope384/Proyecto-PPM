@@ -14,5 +14,5 @@ public data class FormState(
     val lastModified: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
     val shareUrl: String? = null,
     val exportPath: String? = null,
-    val folderId: Int? = null
+    val folderId: String? = null
 )

@@ -1,6 +1,6 @@
 package com.example.Proyecto.layouts.folderScreen
 
-import FolderScreen
+import com.example.Proyecto.layouts.folderScreen.FormDisplayScreen
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -25,7 +25,7 @@ fun NavGraphBuilder.folderScreen(
 ) {
     composable<FolderDestination> {  backStackEntry ->
         val backStackParams: FolderDestination = backStackEntry.toRoute()
-        FolderScreen(
+        FormDisplayScreen(
             onBack = onBack,
             onCreateForm = onCreateForm,
             onFillForm = onFillForm,
