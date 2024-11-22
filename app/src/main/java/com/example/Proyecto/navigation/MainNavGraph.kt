@@ -11,6 +11,8 @@ import com.example.Proyecto.layouts.fillFormScreen.fillFormScreen
 import com.example.Proyecto.layouts.fillFormScreen.navigateToFillFormScreen
 import com.example.Proyecto.layouts.folderScreen.folderScreen
 import com.example.Proyecto.layouts.folderScreen.navigateToFolderScreen
+import com.example.Proyecto.layouts.profileScreen.navigateToProfileScreen
+import com.example.Proyecto.layouts.profileScreen.profileScreen
 import com.example.Proyecto.layouts.startScreen.StartDestination
 import com.example.Proyecto.layouts.startScreen.startScreen
 
@@ -28,11 +30,17 @@ fun NavGraphBuilder.mainNavGraph(
         startDestination = StartDestination
     ) {
         startScreen(
-            onBack = navController::navigateUp,
+            onProfileClick = navController::navigateToProfileScreen,
             onFolderClick = navController::navigateToFolderScreen,
             onFillFormClick = navController::navigateToFillFormScreen,
             onEditFormClick = navController::navigateToCreateFormScreen
         )
+
+        profileScreen(
+            onBack = navController::navigateUp,
+            onLogout = navController::navigateToMainGraph
+        )
+
         createFormScreen(
             onBack = navController::navigateUp,
             onCreateFormClick = {}

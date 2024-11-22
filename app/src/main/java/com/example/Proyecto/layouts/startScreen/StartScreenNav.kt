@@ -8,14 +8,14 @@ import kotlinx.serialization.Serializable
 data object StartDestination
 
 fun NavGraphBuilder.startScreen(
-    onBack: () -> Unit,
+    onProfileClick: () -> Unit,
     onFolderClick: (String) -> Unit,
     onFillFormClick: (String, String?) -> Unit,
     onEditFormClick: (String?, String?) -> Unit
 ) {
     composable<StartDestination> {
         StartScreenRoute(
-            onBack = onBack,
+            onProfileClick = onProfileClick,
             onFolderClick = onFolderClick,
             onFillFormClick = onFillFormClick,
             onEditFormClick = onEditFormClick
