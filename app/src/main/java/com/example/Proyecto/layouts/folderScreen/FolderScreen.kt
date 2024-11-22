@@ -30,6 +30,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -39,8 +40,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.Proyecto.ui.theme.DarkPastoGreen
+import com.example.Proyecto.ui.theme.LightPastoGreen
 import com.example.Proyecto.util.type.FolderItem
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,7 +74,7 @@ fun FolderScreen(onBack: () -> Unit, id: String, onCreateForm : (String?, String
                     Icon(Icons.Default.Delete, contentDescription = "Delete")
                 }
             } else {
-                FloatingActionButton(onClick = { onCreateForm(null, id) }) {
+                FloatingActionButton(onClick = { onCreateForm(null, id) }, containerColor = DarkPastoGreen) {
                     Icon(Icons.Default.Add, contentDescription = "Add")
                 }
             }
@@ -100,6 +104,7 @@ fun FolderScreen(onBack: () -> Unit, id: String, onCreateForm : (String?, String
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(query: String, onQueryChange: (String) -> Unit) {
     TextField(
@@ -111,7 +116,10 @@ fun SearchBar(query: String, onQueryChange: (String) -> Unit) {
             .padding(16.dp),
         leadingIcon = {
             Icon(Icons.Default.Search, contentDescription = "Buscar")
-        }
+        },
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = Color.Transparent
+        )
     )
 }
 
