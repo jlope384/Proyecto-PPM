@@ -29,9 +29,9 @@ fun CreateFormRoute(
     onCreateFormSuccess: () -> Unit,
     id: String? = null,
     folderId: String? = null,
-    onBack: () -> Unit,
-    viewModel: CreateFormViewModel = viewModel()
+    onBack: () -> Unit
 ) {
+    val viewModel: CreateFormViewModel = viewModel()
     val formState by viewModel.formState.collectAsState()
     val validationErrors by viewModel.validationErrors.collectAsStateWithLifecycle()
     LaunchedEffect(key1 = id) {

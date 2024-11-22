@@ -42,7 +42,8 @@ import com.example.Proyecto.util.type.FolderItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FolderScreen(onBack: () -> Unit, viewModel: FolderScreenViewModel = viewModel()) {
+fun FolderScreen(onBack: () -> Unit, id: String, onCreateForm : (String?, String?) -> Unit, onFillForm: (String, String?) -> Unit) {
+    val viewModel: FolderScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
     val folderItems by viewModel.folderItems.collectAsState()
     val selectedItems by viewModel.selectedItems.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
@@ -66,7 +67,7 @@ fun FolderScreen(onBack: () -> Unit, viewModel: FolderScreenViewModel = viewMode
                     Icon(Icons.Default.Delete, contentDescription = "Delete")
                 }
             } else {
-                FloatingActionButton(onClick = { /* Navegar a la pantalla de crear formulario */ }) {
+                FloatingActionButton(onClick = { onCreateForm(null, id) }) {
                     Icon(Icons.Default.Add, contentDescription = "Add")
                 }
             }

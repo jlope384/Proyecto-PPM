@@ -53,6 +53,8 @@ fun NavGraphBuilder.mainNavGraph(
         )
         folderScreen(
             onBack = navController::navigateUp,
+            onCreateForm = navController::navigateToCreateFormScreen,
+            onFillForm = navController::navigateToFillFormScreen
         )
 
     }
