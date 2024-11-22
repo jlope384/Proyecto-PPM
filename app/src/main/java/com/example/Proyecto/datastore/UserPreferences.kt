@@ -1,36 +1,35 @@
 package com.example.Proyecto.datastore
 
-import android.content.Context
+import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import com.example.Proyecto.dataStore
+import androidx.datastore.preferences.core.edit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
+class UserPreferences(private val dataStore: DataStore<Preferences>) {
 
-class UserPreferences(private val context: Context) {
-
-    companion object {
-        val USER_ID_KEY = stringPreferencesKey("user_id")
-        val USER_EMAIL_KEY = stringPreferencesKey("user_email")
-    }
-
-    val userId: Flow<String?> = context.dataStore.data
-        .map { preferences ->
-            preferences[USER_ID_KEY]
-        }
+    val USER_ID_KEY = stringPreferencesKey("user_id")
+    val USER_LOGGED_IN_KEY = booleanPreferencesKey("user_logged_in")
 
     suspend fun saveUserId(userId: String) {
-        context.dataStore.edit { preferences ->
+        dataStore.edit { preferences ->
             preferences[USER_ID_KEY] = userId
         }
     }
 
-    suspend fun saveUserEmail(email: String) {
-        context.dataStore.edit { preferences ->
-            preferences[USER_EMAIL_KEY] = email
+    suspend fun saveUserLoggedIn(loggedIn: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[USER_LOGGED_IN_KEY] = loggedIn
         }
+    }
+
+    fun getUserId(): Flow<String?> = dataStore.data.map { preferences ->
+        preferences[USER_ID_KEY]
+    }
+
+    fun getUserLoggedIn(): Flow<Boolean> = dataStore.data.map { preferences ->
+        preferences[USER_LOGGED_IN_KEY] ?: false
     }
 }
